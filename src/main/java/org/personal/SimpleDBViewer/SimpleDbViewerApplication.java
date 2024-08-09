@@ -1,5 +1,10 @@
 package org.personal.SimpleDBViewer;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
+import org.personal.SimpleDBViewer.domain.CPUListEntity;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -12,6 +17,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
+import java.util.List;
 
 @SpringBootApplication
 public class SimpleDbViewerApplication {
@@ -46,6 +53,82 @@ public class SimpleDbViewerApplication {
 		}
 	}
 	
+	private static SessionFactory buildSessionFactory() {
+		final StandardServiceRegistry registry = 
+				new StandardServiceRegistryBuilder().build();
+		
+		try {
+			return new MetadataSources(registry).addAnnotatedClass(CPUListEntity.class).buildMetadata().buildSessionFactory();
+		} catch(Exception e) {
+			StandardServiceRegistryBuilder.destroy(registry);
+		}
+		return null;
+	}
+
+	public static List<CPUListEntity> getAllCPUs(Session s, boolean closeSession) {
+		Transaction t = s.beginTransaction();
+		try {
+			List<CPUListEntity> cpus = s.createQuery("SELECT id, name from CPUListEntity", CPUListEntity.class).list();
+			t.commit();
+			return cpus;
+		} catch(Exception e) {
+			t.rollback();
+			e.printStackTrace();
+		} finally {
+			if(closeSession && s.isOpen()) {
+				s.close();
+			}
+		}
+		return null;
+	}
+
+	public static List<CPUListEntity> getAllCPUs(Session s) {
+		return getAllCPUs(s, true);
+	} 
+	
+	public static void createCPUListEntry(Session s, Long id, String cpuname, boolean closeSession) {
+		Transaction t = s.beginTransaction();
+		try {
+			CPUListEntity cpu = new CPUListEntity();
+			cpu.setId(id);
+			cpu.setName(cpuname);
+			s.persist(cpu);
+			t.commit();
+		} catch(Exception e) {
+			t.rollback();
+			e.printStackTrace();
+		} finally {
+			if(closeSession && s.isOpen()) {
+				s.close();
+			}
+		}
+	}
+
+	public static void createCPUListEntry(Session s, Long id, String cpuname) {
+		createCPUListEntry(s, id, cpuname, true);
+	}
+	
+	public static void deleteCPUListEntry(Session s, CPUListEntity cpu, boolean closeSession) {
+		Transaction t = s.beginTransaction();
+		try {
+			s.remove(cpu);
+			t.commit();
+		} catch(Exception e) {
+			t.rollback();
+			e.printStackTrace();
+		} finally {
+			if(closeSession && s.isOpen()) {
+				s.close();
+			}
+		}
+	}
+
+	public static void deleteCPUListEntry(Session s, CPUListEntity cpu) {
+		deleteCPUListEntry(s, cpu, true);
+	}
+	
+	
+	
 //	@Bean
 //	public CommandLineRunner run(DBRepository repo) {
 //		return (args) {
@@ -60,6 +143,21 @@ public class SimpleDbViewerApplication {
 //			System.out.println(beanName);
 //		}
 		
-		executeDBCommands();
+//		executeDBCommands();
+		
+		SessionFactory sf = buildSessionFactory();
+		Session session = sf.openSession();
+		createCPUListEntry(session, 1000L, "i7 11700KF", false);
+		List<CPUListEntity> list = getAllCPUs(session, false);
+		System.out.println("START LIST");
+		for(CPUListEntity c : list) System.out.println(c);
+		System.out.println("END LIST");
+		if(!list.isEmpty()) {
+			deleteCPUListEntry(session, list.get(0));
+		}
+		list = getAllCPUs(session);
+		System.out.println("START LIST");
+		for(CPUListEntity c : list) System.out.println(c);
+		System.out.println("END LIST");
 	}
 }

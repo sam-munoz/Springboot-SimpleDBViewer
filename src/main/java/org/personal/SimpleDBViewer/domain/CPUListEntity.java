@@ -11,12 +11,12 @@ import jakarta.persistence.Table;
 @Table(name="cpulist")
 public class CPUListEntity {
 	
-	@Column(name="cpulistId")
+	@Column(name="cpulist_id")
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name="cpulistName")
+	@Column(name="cpulist_name")
 	private String name;
 	
 	public CPUListEntity() {}
@@ -29,6 +29,10 @@ public class CPUListEntity {
 
 	public Long getId() {
 		return id;
+	}
+
+	public Long setId(Long id) {
+		return this.id = id;
 	}
 
 	public String getName() {
