@@ -60,83 +60,46 @@ public class SimpleDbViewerApplication {
 	private static SessionFactory buildSessionFactory() {
 		SessionFactory sf = new Configuration()
 				.addAnnotatedClass(CPUListEntity.class)
-				.setProperty(URL, "jdbc:h2:file:./src/main/data/h2db")
-				.setProperty(USER, "")
-				.setProperty(PASS, "")
-				.setProperty("hibernate.agroal.maxSize", 2) 
-				.setProperty(SHOW_SQL, true)
-                .setProperty(FORMAT_SQL, true)
-                .setProperty(HIGHLIGHT_SQL, true)
-                .buildSessionFactory();
-		
-		sf.getSchemaManager().exportMappedObjects(true);
+				.buildSessionFactory();
 		return sf;
 	}
 	
-	public static void createCPUListEntry(Session s, Long id, String cpuname, boolean closeSession) {
-		s.beginTransaction();
-		if(id < 0) {
-			CPUListEntity c = new CPUListEntity();
-			c.setName(cpuname);
-			s.save(c);
-		} else {
-			s.save(new CPUListEntity(id, cpuname));
-		}
-		s.getTransaction().commit();
-		if(closeSession) s.close();
-	}
-	
-	public static void createCPUListEntry(Session s, String cpuname, boolean closeSession) {
-		createCPUListEntry(s, -1L, cpuname, closeSession);
+	public static void createCPUListEntry(SessionFactory s, CPUListEntity cpu) {
+		s.inTransaction(session -> {
+			session.persist(cpu);
+		});
 	}
 
-	public static void createCPUListEntry(Session s, String cpuname) {
-		createCPUListEntry(s, -1L, cpuname, true);
-	}
-
-	public static List<CPUListEntity> getAllCPUs(Session s, boolean closeSession) {
+	public static List<CPUListEntity> getAllCPUs(SessionFactory s) {
+		Session session = s.openSession();
 		List<CPUListEntity> rtnList = null;
-		s.beginTransaction();
-		rtnList = s.createSelectionQuery("from CPUListEntity", CPUListEntity.class).getResultList();
-		s.getTransaction().commit();
-		if(closeSession) s.close();
+		session.beginTransaction();
+		rtnList = session.createSelectionQuery("from CPUListEntity", CPUListEntity.class).getResultList();
+		session.getTransaction().commit();
+		session.close();
 		return rtnList;
 	}
-
-	public static List<CPUListEntity> getAllCPUs(Session s) {
-		return getAllCPUs(s, true);
+	
+	public static void updateCPUListEntry(SessionFactory s, CPUListEntity cpu) {
+		s.inTransaction(session -> {
+			session.merge(cpu);
+		});
 	}
 	
-	public static void updateCPUListEntry(Session s, CPUListEntity cpu, boolean closeSession) {
-		s.beginTransaction();
-		s.update(cpu);
-		s.getTransaction().commit();
-		if(closeSession) s.close();
+	public static void deleteCPUListEntry(SessionFactory s, CPUListEntity cpu) {
+		s.inTransaction(session -> {
+			session.remove(cpu);
+		});
 	}
 	
-	public static void updateCPUListEntry(Session s, CPUListEntity cpu) {
-		updateCPUListEntry(s, cpu, true);
-	}
-	
-	public static void deleteCPUListEntry(Session s, CPUListEntity cpu, boolean closeSession) {
-		// my naive way of doing things
-		s.beginTransaction();
-		s.delete(cpu);
-		s.getTransaction().commit();
-		if(closeSession) s.close();
-
-		// NOT NEEDED YET
-		// get objects in the persistence context
-		
-		// delete that object
+	public static List<CPUListEntity> printRows(SessionFactory s) {
+		List<CPUListEntity> l = getAllCPUs(s);
+		System.out.println("LIST START");
+		for(CPUListEntity c : l) System.out.println(c);
+		System.out.println("LIST END");
+		return l;
 	}
 
-	public static void deleteCPUListEntry(Session s, CPUListEntity cpu) {
-		deleteCPUListEntry(s, cpu, true);
-	}
-	
-	
-	
 //	@Bean
 //	public CommandLineRunner run(DBRepository repo) {
 //		return (args) {
@@ -153,44 +116,33 @@ public class SimpleDbViewerApplication {
 		
 //		executeDBCommands();
 		
+		// create SessionFactory
 		SessionFactory sessionFactory = buildSessionFactory();
-		Session s = sessionFactory.openSession();
 		
-		// create a new entry
-		createCPUListEntry(s, "i7-11700KF", false);
-		createCPUListEntry(s, "i3-8100", false);
-
-		// list all cpus in the database
-		List<CPUListEntity> l = getAllCPUs(s, false);
-		System.out.println("LIST START");
-		for(CPUListEntity c : l) System.out.println(c);
-		System.out.println("LIST END");
+		// create rows into the database
+		CPUListEntity cpu0 = new CPUListEntity();
+		cpu0.setName("i7-11700KF");
+		CPUListEntity cpu1 = new CPUListEntity();
+		cpu1.setName("i3-8100");
+		createCPUListEntry(sessionFactory, cpu0);
+		createCPUListEntry(sessionFactory, cpu1);
 		
-		// update cpu entry
+		List<CPUListEntity> l = printRows(sessionFactory);
+		
+		// update an entity
 		if(!l.isEmpty()) {
 			l.getFirst().setName("i7-10700F");
-			updateCPUListEntry(s, l.getFirst(), false);
+			updateCPUListEntry(sessionFactory, l.getFirst());
 		}
+		
+		l = printRows(sessionFactory);
+		
+		// remove all entries in the database
+//		while(!l.isEmpty()) {
+//			deleteCPUListEntry(sessionFactory, l.getFirst());
+//			l.removeFirst();
+//		}
 
-		// list all cpus in the database
-		l = getAllCPUs(s, false);
-		System.out.println("LIST START");
-		for(CPUListEntity c : l) System.out.println(c);
-		System.out.println("LIST END");
-		
-		// empty database
-		while(!l.isEmpty()) {
-			deleteCPUListEntry(s, l.get(0), false);
-			l = getAllCPUs(s, false);
-		}
-
-		// list all cpus in the database
-		l = getAllCPUs(s);
-		System.out.println("LIST START");
-		for(CPUListEntity c : l) System.out.println(c);
-		System.out.println("LIST END");
-		
-		// update an existing cpu entry
-		
+		l = printRows(sessionFactory);
 	}
 }
