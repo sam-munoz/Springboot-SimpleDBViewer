@@ -1,6 +1,7 @@
 package org.personal.SimpleDBViewer;
 
 import org.personal.SimpleDBViwer.CRUDRepository.CPUListEntityCRUDRepository;
+import org.personal.SimpleDBViwer.CRUDRepository.UsersCPURankingCRUDRepository;
 import org.personal.SimpleDBViwer.CRUDRepository.UsersEntityCRUDRepository;
 import org.hibernate.SessionFactory;
 import org.hibernate.Session;
@@ -11,6 +12,7 @@ import static org.hibernate.cfg.AvailableSettings.*;
 
 import org.hibernate.cfg.Configuration;
 import org.personal.SimpleDBViewer.domain.CPUListEntity;
+import org.personal.SimpleDBViewer.domain.UsersCPURankingEntity;
 import org.personal.SimpleDBViewer.domain.UsersEntity;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,7 +26,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication
@@ -63,20 +65,29 @@ public class SimpleDbViewerApplication {
 	private static SessionFactory buildSessionFactory() {
 		SessionFactory sf = new Configuration()
 				.addAnnotatedClass(CPUListEntity.class)
+				.addAnnotatedClass(UsersEntity.class)
+				.addAnnotatedClass(UsersCPURankingEntity.class)
 				.buildSessionFactory();
 		return sf;
 	}
 	
-	public static void printRows(SessionFactory s, int tableNum) {
-		List<Object> l = null;
+	public static void printTable(SessionFactory s, int tableNum) {
 		if(tableNum == 0) {
-			l = (List<Object>) CPUListEntityCRUDRepository.getAllCPUs(s);
-		} else {
-			l = (List<Object>) UsersEntityCRUDRepository.getAllUsersEntities(s);
+			List<CPUListEntity> l = CPUListEntityCRUDRepository.getAllCPUs(s);
+			System.out.println("START PRINTING CPULIST");
+			for(Object obj : l) System.out.println(obj);
+			System.out.println("END PRINTING");
+		} else if(tableNum == 1) {
+			List<UsersEntity> l = UsersEntityCRUDRepository.getAllUsersEntities(s);
+			System.out.println("START PRINTING USERS");
+			for(Object obj : l) System.out.println(obj);
+			System.out.println("END PRINTING");
+		} else if(tableNum == 2) {
+			List<UsersCPURankingEntity> l = UsersCPURankingCRUDRepository.getAllUsersEntities(s);
+			System.out.println("START PRINTING RANKINGS");
+			for(Object obj : l) System.out.println(obj);
+			System.out.println("END PRINTING");
 		}
-		System.out.println("LIST START");
-		for(Object obj : l) System.out.println(obj);
-		System.out.println("LIST END");
 	}
 
 //	@Bean
@@ -98,27 +109,31 @@ public class SimpleDbViewerApplication {
 		// create SessionFactory
 		SessionFactory sessionFactory = buildSessionFactory();
 		
-		// create rows into the database
-		CPUListEntity cpu0 = new CPUListEntity();
-		cpu0.setName("i7-11700KF");
-		CPUListEntityCRUDRepository.createCPUListEntity(sessionFactory, cpu0);
+		// create cpu entities
+		List<CPUListEntity> cpulist = new ArrayList<CPUListEntity>();
+		cpulist.add(CPUListEntityCRUDRepository.createCPUListEntity(sessionFactory, "i7-11700KF"));
+		cpulist.add(CPUListEntityCRUDRepository.createCPUListEntity(sessionFactory, "i3-8100"));
 		
-		List<CPUListEntity> l = printRows(sessionFactory);
+		// create user entities
+		List<UsersEntity> userslist = new ArrayList<UsersEntity>();
+		userslist.add(UsersEntityCRUDRepository.createUsersEntity(sessionFactory, "User 1"));
+		userslist.add(UsersEntityCRUDRepository.createUsersEntity(sessionFactory, "User 2"));
 		
-		// update an entity
-		if(!l.isEmpty()) {
-			l.getFirst().setName("i7-10700F");
-			CPUListEntityCRUDRepository.updateCPUListEntity(sessionFactory, l.getFirst());
-		}
+		// print tables
+		printTable(sessionFactory, 0);
+		printTable(sessionFactory, 1);
 		
-		l = printRows(sessionFactory);
-		
-		// remove all entries in the database
-		while(!l.isEmpty()) {
-			CPUListEntityCRUDRepository.deleteCPUListEntity(sessionFactory, l.getFirst());
-			l.removeFirst();
-		}
+		// create a ranking
+		List<UsersCPURankingEntity> rankinglist = new ArrayList<UsersCPURankingEntity>();
+		rankinglist.add(UsersCPURankingCRUDRepository.createRankingEntity(sessionFactory, userslist.getFirst(), cpulist.getFirst(), 5));
 
-		l = printRows(sessionFactory);
+		// print tables
+		printTable(sessionFactory, 2);
+		
+		// delete ranking
+		UsersCPURankingCRUDRepository.deleteRankingEntity(sessionFactory, rankinglist.getFirst());
+
+		// print tables
+		printTable(sessionFactory, 2);
 	}
 }

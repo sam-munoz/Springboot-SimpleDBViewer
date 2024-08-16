@@ -9,6 +9,22 @@ public class UsersEntityCRUDRepository extends AbstractCRUDRepository {
 	public static void createUsersEntity(SessionFactory s, UsersEntity user) {
 		AbstractCRUDRepository.createEntity(s, user);
 	}
+
+	public static UsersEntity createUsersEntity(SessionFactory s, String userName, String userPasswd) {
+		UsersEntity user = new UsersEntity();
+		user.setName(userName);
+		user.setPasswd(userPasswd);
+		AbstractCRUDRepository.createEntity(s, user);
+		return user;
+	}
+
+	public static UsersEntity createUsersEntity(SessionFactory s, String userName) {
+		UsersEntity user = new UsersEntity();
+		user.setName(userName);
+		user.setPasswd(null);
+		AbstractCRUDRepository.createEntity(s, user);
+		return user;
+	}
 	
 	public static List<UsersEntity> getAllUsersEntities(SessionFactory s) {
 		Session session = s.openSession();

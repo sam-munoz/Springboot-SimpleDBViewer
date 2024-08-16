@@ -10,6 +10,13 @@ public class CPUListEntityCRUDRepository {
 	public static void createCPUListEntity(SessionFactory s, CPUListEntity cpu) {
 		AbstractCRUDRepository.createEntity(s, cpu);
 	}
+
+	public static CPUListEntity createCPUListEntity(SessionFactory s, String cpuName) {
+		CPUListEntity cpu = new CPUListEntity();
+		cpu.setName(cpuName);
+		AbstractCRUDRepository.createEntity(s, cpu);
+		return cpu;
+	}
 	
 	public static List<CPUListEntity> getAllCPUs(SessionFactory s) {
 		Session session = s.openSession();

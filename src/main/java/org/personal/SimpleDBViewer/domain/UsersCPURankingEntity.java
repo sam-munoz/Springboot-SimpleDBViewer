@@ -38,4 +38,9 @@ public class UsersCPURankingEntity {
 	public void setRanking(Integer ranking) {
 		this.ranking = ranking;
 	}
+
+	@Override
+	public String toString() {
+		return "UsersCPURankingEntity [id=" + id + ", ranking=" + ranking + "]";
+	}
 }
