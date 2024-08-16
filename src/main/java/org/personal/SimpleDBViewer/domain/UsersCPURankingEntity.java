@@ -1,50 +1,34 @@
 package org.personal.SimpleDBViewer.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name="userscpuranking")
 public class UsersCPURankingEntity {
 	
-	@Column(name="userscpurankingUserid")
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long userId;
-	
-	@Column(name="userscpurankingCpuid")
-	private Long cpuId;
+	@EmbeddedId
+	private UsersCPURankingId id;
 	
 	@Column(name="userscpurankingRanking")
 	private Integer ranking;
 	
 	public UsersCPURankingEntity() {}
 
-	public UsersCPURankingEntity(Long userId, Long cpuId, Integer ranking) {
+	public UsersCPURankingEntity(UsersCPURankingId id, Integer ranking) {
 		super();
-		this.userId = userId;
-		this.cpuId = cpuId;
+		this.id = id;
 		this.ranking = ranking;
 	}
 
-	public Long getUserId() {
-		return userId;
+	public UsersCPURankingId getId() {
+		return id;
 	}
 
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public Long getCpuId() {
-		return cpuId;
-	}
-
-	public void setCpuId(Long cpuId) {
-		this.cpuId = cpuId;
+	public void setId(UsersCPURankingId id) {
+		this.id = id;
 	}
 
 	public Integer getRanking() {

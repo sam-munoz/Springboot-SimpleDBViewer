@@ -16,6 +16,9 @@ public class CPURankingSummaryEntity {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long cpuId;
 	
+	@Column(name="cpurankingsummaryRanksum")
+	private Integer rankSum;
+
 	@Column(name="cpurankingsummaryCount")
 	private Long count;
 	
@@ -37,6 +40,14 @@ public class CPURankingSummaryEntity {
 
 	public void setCount(Long count) {
 		this.count = count;
+	}
+	
+	public Integer getRankSum() {
+		return rankSum;
+	}
+
+	public void setRankSum(Integer rankSum) {
+		this.rankSum = rankSum;
 	}
 
 	@Override

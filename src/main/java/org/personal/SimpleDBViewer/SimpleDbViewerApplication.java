@@ -1,5 +1,7 @@
 package org.personal.SimpleDBViewer;
 
+import org.personal.SimpleDBViwer.CRUDRepository.CPUListEntityCRUDRepository;
+import org.personal.SimpleDBViwer.CRUDRepository.UsersEntityCRUDRepository;
 import org.hibernate.SessionFactory;
 import org.hibernate.Session;
 import org.hibernate.boot.MetadataSources;
@@ -9,6 +11,7 @@ import static org.hibernate.cfg.AvailableSettings.*;
 
 import org.hibernate.cfg.Configuration;
 import org.personal.SimpleDBViewer.domain.CPUListEntity;
+import org.personal.SimpleDBViewer.domain.UsersEntity;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -64,40 +67,16 @@ public class SimpleDbViewerApplication {
 		return sf;
 	}
 	
-	public static void createCPUListEntry(SessionFactory s, CPUListEntity cpu) {
-		s.inTransaction(session -> {
-			session.persist(cpu);
-		});
-	}
-
-	public static List<CPUListEntity> getAllCPUs(SessionFactory s) {
-		Session session = s.openSession();
-		List<CPUListEntity> rtnList = null;
-		session.beginTransaction();
-		rtnList = session.createSelectionQuery("from CPUListEntity", CPUListEntity.class).getResultList();
-		session.getTransaction().commit();
-		session.close();
-		return rtnList;
-	}
-	
-	public static void updateCPUListEntry(SessionFactory s, CPUListEntity cpu) {
-		s.inTransaction(session -> {
-			session.merge(cpu);
-		});
-	}
-	
-	public static void deleteCPUListEntry(SessionFactory s, CPUListEntity cpu) {
-		s.inTransaction(session -> {
-			session.remove(cpu);
-		});
-	}
-	
-	public static List<CPUListEntity> printRows(SessionFactory s) {
-		List<CPUListEntity> l = getAllCPUs(s);
+	public static void printRows(SessionFactory s, int tableNum) {
+		List<Object> l = null;
+		if(tableNum == 0) {
+			l = (List<Object>) CPUListEntityCRUDRepository.getAllCPUs(s);
+		} else {
+			l = (List<Object>) UsersEntityCRUDRepository.getAllUsersEntities(s);
+		}
 		System.out.println("LIST START");
-		for(CPUListEntity c : l) System.out.println(c);
+		for(Object obj : l) System.out.println(obj);
 		System.out.println("LIST END");
-		return l;
 	}
 
 //	@Bean
@@ -122,26 +101,23 @@ public class SimpleDbViewerApplication {
 		// create rows into the database
 		CPUListEntity cpu0 = new CPUListEntity();
 		cpu0.setName("i7-11700KF");
-		CPUListEntity cpu1 = new CPUListEntity();
-		cpu1.setName("i3-8100");
-		createCPUListEntry(sessionFactory, cpu0);
-		createCPUListEntry(sessionFactory, cpu1);
+		CPUListEntityCRUDRepository.createCPUListEntity(sessionFactory, cpu0);
 		
 		List<CPUListEntity> l = printRows(sessionFactory);
 		
 		// update an entity
 		if(!l.isEmpty()) {
 			l.getFirst().setName("i7-10700F");
-			updateCPUListEntry(sessionFactory, l.getFirst());
+			CPUListEntityCRUDRepository.updateCPUListEntity(sessionFactory, l.getFirst());
 		}
 		
 		l = printRows(sessionFactory);
 		
 		// remove all entries in the database
-//		while(!l.isEmpty()) {
-//			deleteCPUListEntry(sessionFactory, l.getFirst());
-//			l.removeFirst();
-//		}
+		while(!l.isEmpty()) {
+			CPUListEntityCRUDRepository.deleteCPUListEntity(sessionFactory, l.getFirst());
+			l.removeFirst();
+		}
 
 		l = printRows(sessionFactory);
 	}
