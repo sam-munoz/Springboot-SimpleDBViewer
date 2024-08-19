@@ -3,8 +3,8 @@ package org.personal.SimpleDBViewer;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
-import org.personal.SimpleDBViwer.CRUDRepository.CPUListEntityCRUDRepository;
 import org.personal.SimpleDBViewer.SimpleDbViewerApplication;
+import org.personal.SimpleDBViewer.CRUDRepository.CPUListEntityCRUDRepository;
 import org.personal.SimpleDBViewer.domain.CPUListEntity;
 
 public class CPUListEntityTest {

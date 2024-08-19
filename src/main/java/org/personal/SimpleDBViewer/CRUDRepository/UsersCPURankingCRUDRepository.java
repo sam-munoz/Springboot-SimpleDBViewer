@@ -1,4 +1,4 @@
-package org.personal.SimpleDBViwer.CRUDRepository;
+package org.personal.SimpleDBViewer.CRUDRepository;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class UsersCPURankingCRUDRepository {
 	}
 
 	public static UsersCPURankingEntity createRankingEntity(SessionFactory s, UsersEntity user, CPUListEntity cpu, Integer ranking) {
-		UsersCPURankingEntity r = new UsersCPURankingEntity(new UsersCPURankingId(user.getId(), cpu.getId()), ranking);
+		UsersCPURankingEntity r = new UsersCPURankingEntity(new UsersCPURankingId(cpu, user), ranking);
 		AbstractCRUDRepository.createEntity(s, r);
 		return r;
 	}

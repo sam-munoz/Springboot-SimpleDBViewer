@@ -14,6 +14,8 @@ create table if not exists users (
 );
 
 -- Stores the ranking a person gave to a cpu; both person and cpu are stored in the tables above
+-- users can make multiple rankings, but a ranking can only correspond to one user 
+-- one cpus can be ranked several times, but a ranking can only correspond to one cpu 
 create table if not exists userscpuranking (
 	userscpuranking_cpuid bigint,
 	userscpuranking_usersid bigint,
@@ -24,6 +26,7 @@ create table if not exists userscpuranking (
 );
 
 -- Table to quickly compute the average ranking per cpu
+-- each summary corresponds uniquely to one cpu and each cpu can only have one summary (otherwise, data duplication has occured)
 create table if not exists cpurankingsummary (
 	cpurankingsummary_cpuid bigint primary key,
 	cpurankingsummary_ranksum integer not null,

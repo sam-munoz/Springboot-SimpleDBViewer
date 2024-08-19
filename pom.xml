@@ -64,6 +64,13 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>6.5.2.Final</version>
 		</dependency>
+		<!-- <dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+			<version>6.5.2.Final</version>
+			<type>pom</type>
+			<scope>provided</scope>
+		</dependency> -->
 	</dependencies>
 
 	<build>
@@ -71,6 +78,28 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.13.0</version>
+				<configuration>
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.hibernate.orm</groupId>
+							<artifactId>hibernate-jpamodelgen</artifactId>
+							<version>$currentHibernateVersion</version>
+							<!-- Optionally exclude transitive dependencies -->
+							<exclusions>
+								<exclusion>
+									<groupId>org.sample</groupId>
+									<artifactId>sample-dependency</artifactId>
+								</exclusion>
+							</exclusions>
+						</path>
+					</annotationProcessorPaths>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

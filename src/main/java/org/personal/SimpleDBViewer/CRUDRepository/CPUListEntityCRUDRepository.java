@@ -1,4 +1,4 @@
-package org.personal.SimpleDBViwer.CRUDRepository;
+package org.personal.SimpleDBViewer.CRUDRepository;
 
 import java.util.List;
 

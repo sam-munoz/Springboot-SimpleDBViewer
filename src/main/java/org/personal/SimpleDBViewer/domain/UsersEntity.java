@@ -1,10 +1,14 @@
 package org.personal.SimpleDBViewer.domain;
 
+import java.util.Objects;
+import java.util.Set;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,6 +25,10 @@ public class UsersEntity {
 
 	@Column(name="usersPasswd")
 	private String passwd;
+	
+//	Cannot get this to work correctly
+//	@OneToMany(mappedBy="user")
+//	Set<UsersCPURankingEntity> rankings;
 	
 	public UsersEntity() {}
 
@@ -50,9 +58,30 @@ public class UsersEntity {
 	public void setPasswd(String passwd) {
 		this.passwd = passwd;
 	}
+	
+//	public Set<UsersCPURankingEntity> getRankings() {
+//		return this.rankings;
+//	}
 
 	@Override
 	public String toString() {
 		return "UsersEntity [id=" + id + ", name=" + name + ", passwd=" + passwd + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, name, passwd);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UsersEntity other = (UsersEntity) obj;
+		return Objects.equals(id, other.id) && Objects.equals(name, other.name) && Objects.equals(passwd, other.passwd);
 	}
 }

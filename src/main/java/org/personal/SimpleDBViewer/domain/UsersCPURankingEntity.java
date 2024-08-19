@@ -10,7 +10,7 @@ import jakarta.persistence.Table;
 public class UsersCPURankingEntity {
 	
 	@EmbeddedId
-	private UsersCPURankingId id;
+	private UsersCPURankingId ucrid;
 	
 	@Column(name="userscpurankingRanking")
 	private Integer ranking;
@@ -19,16 +19,16 @@ public class UsersCPURankingEntity {
 
 	public UsersCPURankingEntity(UsersCPURankingId id, Integer ranking) {
 		super();
-		this.id = id;
+		this.ucrid = id;
 		this.ranking = ranking;
 	}
 
 	public UsersCPURankingId getId() {
-		return id;
+		return ucrid;
 	}
 
 	public void setId(UsersCPURankingId id) {
-		this.id = id;
+		this.ucrid = id;
 	}
 
 	public Integer getRanking() {
@@ -41,6 +41,6 @@ public class UsersCPURankingEntity {
 
 	@Override
 	public String toString() {
-		return "UsersCPURankingEntity [id=" + id + ", ranking=" + ranking + "]";
+		return "UsersCPURankingEntity [id=" + ucrid + ", ranking=" + ranking + "]";
 	}
 }

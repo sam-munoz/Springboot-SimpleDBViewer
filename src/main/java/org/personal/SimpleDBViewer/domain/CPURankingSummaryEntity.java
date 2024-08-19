@@ -1,20 +1,26 @@
 package org.personal.SimpleDBViewer.domain;
 
+import java.util.Objects;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name="cpurankingsummary")
 public class CPURankingSummaryEntity {
 	
-	@Column(name="cpurankingsummaryCpuid")
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long cpuId;
+	@OneToOne(optional=false)
+	@MapsId
+	private CPUListEntity cpu;
 	
 	@Column(name="cpurankingsummaryRanksum")
 	private Integer rankSum;
@@ -24,14 +30,15 @@ public class CPURankingSummaryEntity {
 	
 	public CPURankingSummaryEntity() {}
 
-	public CPURankingSummaryEntity(Long cpuId, Long count) {
+	public CPURankingSummaryEntity(CPUListEntity cpu, Integer rankSum, Long count) {
 		super();
-		this.cpuId = cpuId;
+		this.cpu = cpu;
+		this.rankSum = rankSum;
 		this.count = count;
 	}
 
-	public Long getCpuId() {
-		return cpuId;
+	public CPUListEntity getCpuId() {
+		return cpu;
 	}
 
 	public Long getCount() {
@@ -52,6 +59,24 @@ public class CPURankingSummaryEntity {
 
 	@Override
 	public String toString() {
-		return "CPURankingSummaryEntity [cpuId=" + cpuId + ", count=" + count + "]";
+		return "CPURankingSummaryEntity [cpu=" + cpu + ", rankSum=" + rankSum + ", count=" + count + "]";
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(count, cpu, rankSum);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CPURankingSummaryEntity other = (CPURankingSummaryEntity) obj;
+		return Objects.equals(count, other.count) && Objects.equals(cpu, other.cpu)
+				&& Objects.equals(rankSum, other.rankSum);
 	}
 }
