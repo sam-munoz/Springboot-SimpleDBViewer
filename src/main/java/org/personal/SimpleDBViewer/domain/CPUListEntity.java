@@ -29,7 +29,7 @@ public class CPUListEntity {
 	private String name;
 	
 //	Cannot get this work to work correctly
-//	@OneToMany(mappedBy="cpu")
+//	@OneToMany(mappedBy="cpu", cascade=CascadeType.REMOVE)
 //	Set<UsersCPURankingEntity> rankings;
 	
 	@OneToOne(mappedBy="cpu")

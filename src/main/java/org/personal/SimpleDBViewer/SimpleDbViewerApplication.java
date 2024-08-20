@@ -1,6 +1,7 @@
 package org.personal.SimpleDBViewer;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.Hibernate;
 import org.hibernate.Session;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistry;
@@ -169,19 +170,24 @@ public class SimpleDbViewerApplication {
 		printTable(sessionFactory, 0);
 		printTable(sessionFactory, 1);
 		
+		UsersCPURankingEntity r = UsersCPURankingCRUDRepository.createRankingEntity(sessionFactory, cpulist.getFirst(), userslist.getFirst(), 9);
+		UsersCPURankingEntity context = UsersCPURankingCRUDRepository.getRanking(sessionFactory, r);
+		context = UsersCPURankingCRUDRepository.getRankingEagerly(sessionFactory, r);
+		System.out.println(context);
+		
 		// create a ranking
-		List<UsersCPURankingEntity> rankinglist = new ArrayList<UsersCPURankingEntity>();
-		rankinglist.add(createRanking(sessionFactory, cpulist.getFirst(), userslist.getFirst(), 5));
-		rankinglist.add(createRanking(sessionFactory, cpulist.getFirst(), userslist.getLast(), 7));
+//		List<UsersCPURankingEntity> rankinglist = new ArrayList<UsersCPURankingEntity>();
+//		rankinglist.add(createRanking(sessionFactory, cpulist.getFirst(), userslist.getFirst(), 5));
+//		rankinglist.add(createRanking(sessionFactory, cpulist.getFirst(), userslist.getLast(), 7));
 
 		// print tables
-		printTable(sessionFactory, 2);
-		printTable(sessionFactory, 3);
+//		printTable(sessionFactory, 2);
+//		printTable(sessionFactory, 3);
 		
 		// delete ranking
-		UsersCPURankingCRUDRepository.deleteRankingEntity(sessionFactory, rankinglist.getFirst());
+//		UsersCPURankingCRUDRepository.deleteRankingEntity(sessionFactory, rankinglist.getFirst());
 
 		// print tables
-		printTable(sessionFactory, 2);
+//		printTable(sessionFactory, 2);
 	}
 }

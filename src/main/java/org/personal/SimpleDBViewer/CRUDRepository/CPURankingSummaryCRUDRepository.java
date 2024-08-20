@@ -21,7 +21,7 @@ public class CPURankingSummaryCRUDRepository {
 	public static CPURankingSummaryEntity createCPUSummaryEntity(SessionFactory s, CPUListEntity cpu, Integer rankSum) {
 		return createCPUSummaryEntity(s, cpu, rankSum, 1L);
 	}
-
+	
 	public static List<CPURankingSummaryEntity> getAllCPUSummaryEntities(SessionFactory s) {
 		Session session = s.openSession();
 		List<CPURankingSummaryEntity> rtnList = null;
@@ -30,6 +30,15 @@ public class CPURankingSummaryCRUDRepository {
 		session.getTransaction().commit();
 		session.close();
 		return rtnList;
+	}
+
+	public static CPURankingSummaryEntity getCPUSummaryEntity(SessionFactory s, CPURankingSummaryEntity summary) {
+		Session session = s.openSession();
+		session.beginTransaction();
+		CPURankingSummaryEntity context = session.find(CPURankingSummaryEntity.class, summary);
+		session.getTransaction().commit();
+		session.close();
+		return context;
 	}
 	
 	public static void updateCPUSummaryEntity(SessionFactory s, CPURankingSummaryEntity summary) {

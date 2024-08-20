@@ -64,13 +64,12 @@
 			<artifactId>hibernate-core</artifactId>
 			<version>6.5.2.Final</version>
 		</dependency>
-		<!-- <dependency>
+		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-jpamodelgen</artifactId>
 			<version>6.5.2.Final</version>
-			<type>pom</type>
-			<scope>provided</scope>
-		</dependency> -->
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -89,14 +88,9 @@
 						<path>
 							<groupId>org.hibernate.orm</groupId>
 							<artifactId>hibernate-jpamodelgen</artifactId>
-							<version>$currentHibernateVersion</version>
+							<version>6.5.2.Final</version>
 							<!-- Optionally exclude transitive dependencies -->
-							<exclusions>
-								<exclusion>
-									<groupId>org.sample</groupId>
-									<artifactId>sample-dependency</artifactId>
-								</exclusion>
-							</exclusions>
+							<!-- None for now -->
 						</path>
 					</annotationProcessorPaths>
 				</configuration>

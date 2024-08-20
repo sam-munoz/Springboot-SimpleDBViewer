@@ -9,12 +9,10 @@ import jakarta.persistence.ManyToOne;
 
 @Embeddable
 public class UsersCPURankingId {
-//	@ManyToOne(fetch=FetchType.LAZY)
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	private CPUListEntity cpu;
 	
-//	@ManyToOne(fetch=FetchType.LAZY)
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.LAZY)
 	private UsersEntity user;
 	
 	public UsersCPURankingId() {}

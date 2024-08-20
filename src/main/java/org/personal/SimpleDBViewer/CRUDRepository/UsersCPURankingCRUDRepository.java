@@ -14,7 +14,7 @@ public class UsersCPURankingCRUDRepository {
 		AbstractCRUDRepository.createEntity(s, ranking);
 	}
 
-	public static UsersCPURankingEntity createRankingEntity(SessionFactory s, UsersEntity user, CPUListEntity cpu, Integer ranking) {
+	public static UsersCPURankingEntity createRankingEntity(SessionFactory s, CPUListEntity cpu, UsersEntity user, Integer ranking) {
 		UsersCPURankingEntity r = new UsersCPURankingEntity(new UsersCPURankingId(cpu, user), ranking);
 		AbstractCRUDRepository.createEntity(s, r);
 		return r;
@@ -32,5 +32,25 @@ public class UsersCPURankingCRUDRepository {
 
 	public static void deleteRankingEntity(SessionFactory s, UsersCPURankingEntity ranking) {
 		AbstractCRUDRepository.deleteEntity(s, ranking);
+	}
+	
+	public static UsersCPURankingEntity getRanking(SessionFactory s, UsersCPURankingEntity ranking) {
+		Session session = s.openSession();
+		session.beginTransaction();
+		UsersCPURankingEntity context = session.getReference(UsersCPURankingEntity.class, ranking.getId());
+		session.getTransaction().commit();
+		session.close();
+		return context;
+	}
+
+	public static UsersCPURankingEntity getRankingEagerly(SessionFactory s, UsersCPURankingEntity ranking) {
+		Session session = s.openSession();
+		session.beginTransaction();
+		UsersCPURankingEntity context = session.getReference(UsersCPURankingEntity.class, ranking.getId());
+		context.getId().getCpu();
+		context.getId().getUser();
+		session.getTransaction().commit();
+		session.close();
+		return context;
 	}
 }

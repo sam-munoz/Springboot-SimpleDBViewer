@@ -16,9 +16,8 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name="cpurankingsummary")
 public class CPURankingSummaryEntity {
-	
 	@Id
-	@OneToOne(optional=false)
+	@OneToOne(optional=false, fetch=FetchType.EAGER)
 	@MapsId
 	private CPUListEntity cpu;
 	
