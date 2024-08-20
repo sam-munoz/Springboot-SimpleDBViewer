@@ -69,7 +69,16 @@
 			<artifactId>hibernate-jpamodelgen</artifactId>
 			<version>6.5.2.Final</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.10.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.assertj</groupId>
+			<artifactId>assertj-core</artifactId>
+			<version>3.26.3</version>
+		</dependency>
 	</dependencies>
 
 	<build>
