@@ -66,7 +66,7 @@ public class SimpleDbViewerApplication {
 		}
 	}
 	
-	private static SessionFactory buildSessionFactory() {
+	protected static SessionFactory buildSessionFactory() {
 		SessionFactory sf = new Configuration()
 				.addAnnotatedClass(CPUListEntity.class)
 				.addAnnotatedClass(UsersEntity.class)
@@ -152,42 +152,5 @@ public class SimpleDbViewerApplication {
 //		}
 		
 //		executeDBCommands();
-		
-		// create SessionFactory
-		SessionFactory sessionFactory = buildSessionFactory();
-		
-		// create cpu entities
-		List<CPUListEntity> cpulist = new ArrayList<CPUListEntity>();
-		cpulist.add(CPUListEntityCRUDRepository.createCPUListEntity(sessionFactory, "i7-11700KF"));
-		cpulist.add(CPUListEntityCRUDRepository.createCPUListEntity(sessionFactory, "i3-8100"));
-		
-		// create user entities
-		List<UsersEntity> userslist = new ArrayList<UsersEntity>();
-		userslist.add(UsersEntityCRUDRepository.createUsersEntity(sessionFactory, "User 1"));
-		userslist.add(UsersEntityCRUDRepository.createUsersEntity(sessionFactory, "User 2"));
-		
-		// print tables
-		printTable(sessionFactory, 0);
-		printTable(sessionFactory, 1);
-		
-		UsersCPURankingEntity r = UsersCPURankingCRUDRepository.createRankingEntity(sessionFactory, cpulist.getFirst(), userslist.getFirst(), 9);
-		UsersCPURankingEntity context = UsersCPURankingCRUDRepository.getRanking(sessionFactory, r);
-		context = UsersCPURankingCRUDRepository.getRankingEagerly(sessionFactory, r);
-		System.out.println(context);
-		
-		// create a ranking
-//		List<UsersCPURankingEntity> rankinglist = new ArrayList<UsersCPURankingEntity>();
-//		rankinglist.add(createRanking(sessionFactory, cpulist.getFirst(), userslist.getFirst(), 5));
-//		rankinglist.add(createRanking(sessionFactory, cpulist.getFirst(), userslist.getLast(), 7));
-
-		// print tables
-//		printTable(sessionFactory, 2);
-//		printTable(sessionFactory, 3);
-		
-		// delete ranking
-//		UsersCPURankingCRUDRepository.deleteRankingEntity(sessionFactory, rankinglist.getFirst());
-
-		// print tables
-//		printTable(sessionFactory, 2);
 	}
 }

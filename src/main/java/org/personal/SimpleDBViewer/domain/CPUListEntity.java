@@ -25,7 +25,6 @@ public class CPUListEntity {
 	private Long id;
 	
 	@Column(name="cpulist_name")
-	@NaturalId
 	private String name;
 	
 //	Cannot get this work to work correctly
