@@ -23,10 +23,16 @@ public class UsersCPURankingCRUDRepository {
 	public static List<UsersCPURankingEntity> getAllUsersEntities(SessionFactory s) {
 		Session session = s.openSession();
 		List<UsersCPURankingEntity> rtnList = null;
-		session.beginTransaction();
-		rtnList = session.createSelectionQuery("from UsersCPURankingEntity", UsersCPURankingEntity.class).getResultList();
-		session.getTransaction().commit();
-		session.close();
+		try {
+			session.beginTransaction();
+			rtnList = session.createSelectionQuery("from UsersCPURankingEntity", UsersCPURankingEntity.class).getResultList();
+			session.getTransaction().commit();
+		} catch(Exception e) {
+			if(session.getTransaction().isActive()) session.getTransaction().rollback();
+			throw e;
+		} finally {
+			session.close();
+		}
 		return rtnList;
 	}
 
@@ -35,22 +41,36 @@ public class UsersCPURankingCRUDRepository {
 	}
 	
 	public static UsersCPURankingEntity getRanking(SessionFactory s, UsersCPURankingEntity ranking) {
+		UsersCPURankingEntity context = null;
 		Session session = s.openSession();
-		session.beginTransaction();
-		UsersCPURankingEntity context = session.getReference(UsersCPURankingEntity.class, ranking.getId());
-		session.getTransaction().commit();
-		session.close();
+		try {
+			session.beginTransaction();
+			context = session.getReference(UsersCPURankingEntity.class, ranking.getId());
+			session.getTransaction().commit();
+		} catch(Exception e) {
+			if(session.getTransaction().isActive()) session.getTransaction().rollback();
+			throw e;
+		} finally {
+			session.close();
+		}
 		return context;
 	}
 
 	public static UsersCPURankingEntity getRankingEagerly(SessionFactory s, UsersCPURankingEntity ranking) {
+		UsersCPURankingEntity context = null;
 		Session session = s.openSession();
-		session.beginTransaction();
-		UsersCPURankingEntity context = session.getReference(UsersCPURankingEntity.class, ranking.getId());
-		context.getId().getCpu();
-		context.getId().getUser();
-		session.getTransaction().commit();
-		session.close();
+		try {
+			session.beginTransaction();
+			context = session.getReference(UsersCPURankingEntity.class, ranking.getId());
+			context.getId().getCpu();
+			context.getId().getUser();
+			session.getTransaction().commit();
+		} catch(Exception e) {
+			if(session.getTransaction().isActive())	 session.getTransaction().rollback();
+			throw e;
+		} finally {
+			session.close();
+		}
 		return context;
 	}
 }

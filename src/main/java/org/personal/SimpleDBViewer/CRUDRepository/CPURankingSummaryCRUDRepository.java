@@ -25,19 +25,32 @@ public class CPURankingSummaryCRUDRepository {
 	public static List<CPURankingSummaryEntity> getAllCPUSummaryEntities(SessionFactory s) {
 		Session session = s.openSession();
 		List<CPURankingSummaryEntity> rtnList = null;
-		session.beginTransaction();
-		rtnList = session.createSelectionQuery("from CPURankingSummaryEntity", CPURankingSummaryEntity.class).getResultList();
-		session.getTransaction().commit();
-		session.close();
+		try {
+			session.beginTransaction();
+			rtnList = session.createSelectionQuery("from CPURankingSummaryEntity", CPURankingSummaryEntity.class).getResultList();
+			session.getTransaction().commit();
+		} catch (Exception e) {
+			if(session.getTransaction().isActive())	session.getTransaction().rollback();
+			throw e;
+		} finally {
+			session.close();
+		}
 		return rtnList;
 	}
 
 	public static CPURankingSummaryEntity getCPUSummaryEntity(SessionFactory s, CPURankingSummaryEntity summary) {
+		CPURankingSummaryEntity context = null;
 		Session session = s.openSession();
-		session.beginTransaction();
-		CPURankingSummaryEntity context = session.find(CPURankingSummaryEntity.class, summary);
-		session.getTransaction().commit();
-		session.close();
+		try {
+			session.beginTransaction();
+			context = session.find(CPURankingSummaryEntity.class, summary);
+			session.getTransaction().commit();
+		} catch(Exception e) {
+			if(session.getTransaction().isActive())	session.getTransaction().rollback();
+			throw e;
+		} finally {
+			session.close();
+		}
 		return context;
 	}
 	
