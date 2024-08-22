@@ -31,8 +31,8 @@ public class CPUListEntity {
 //	@OneToMany(mappedBy="cpu", cascade=CascadeType.REMOVE)
 //	Set<UsersCPURankingEntity> rankings;
 	
-	@OneToOne(mappedBy="cpu")
-	private CPURankingSummaryEntity summary;
+//	@OneToOne(mappedBy="cpu")
+//	private CPURankingSummaryEntity summary;
 	
 	public CPUListEntity() {}
 	

@@ -1,5 +1,6 @@
 package org.personal.SimpleDBViewer;
 
+import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -18,9 +19,12 @@ import org.personal.SimpleDBViewer.domain.CPURankingSummaryEntity;
 import org.personal.SimpleDBViewer.domain.UsersCPURankingEntity;
 import org.personal.SimpleDBViewer.domain.UsersCPURankingId;
 import org.personal.SimpleDBViewer.domain.UsersEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /*
  * Packages only needed for the for the executeDBCommands method
@@ -35,6 +39,10 @@ import java.util.List;
 
 @SpringBootApplication
 public class SimpleDbViewerApplication {
+
+	@Autowired
+	private EntityManagerFactory entityManager;
+
 	/*
 	 * This code was written based on the following Youtube video
 	 * 	- https://www.youtube.com/watch?v=KgXq2UBNEhA
@@ -143,14 +151,22 @@ public class SimpleDbViewerApplication {
 //			
 //		};
 //	}
+
+@RequestMapping("/")
+String home() {
+	return "Hello, world!";
+}
 	
 	public static void main(String[] args) {
-//		ConfigurableApplicationContext container = SpringApplication.run(SimpleDbViewerApplication.class, args);
-//		
+		ConfigurableApplicationContext container = SpringApplication.run(SimpleDbViewerApplication.class, args);
+
+		CPUListEntityCRUDRepository repo = container.getBean(CPUListEntityCRUDRepository.class);
+		repo.createCPUListEntity("Ryzen 5 5600X");
+
 //		for(String beanName : container.getBeanDefinitionNames()) {
 //			System.out.println(beanName);
 //		}
-		
+
 //		executeDBCommands();
 	}
 }

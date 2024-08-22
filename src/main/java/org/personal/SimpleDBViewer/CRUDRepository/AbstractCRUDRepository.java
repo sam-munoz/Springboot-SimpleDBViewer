@@ -2,10 +2,35 @@ package org.personal.SimpleDBViewer.CRUDRepository;
 
 import java.util.List;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public abstract class AbstractCRUDRepository {
+@Component
+public class AbstractCRUDRepository {
+	@Autowired
+	private EntityManagerFactory entityManagerFactory;
+
+	protected void createEntity(Object obj) {
+		EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+		EntityTransaction tx = entityManager.getTransaction();
+		try {
+			tx.begin();
+			entityManager.persist(obj);
+			tx.commit();
+		} catch(Exception e) {
+			if(tx.isActive()) tx.rollback();
+			throw e;
+		} finally {
+			entityManager.close();
+		}
+	}
+
+
 	protected static void createEntity(SessionFactory s, Object obj) {
 		s.inTransaction(session -> {
 			session.persist(obj);

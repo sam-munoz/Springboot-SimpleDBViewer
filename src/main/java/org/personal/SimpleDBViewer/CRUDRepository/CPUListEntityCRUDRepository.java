@@ -2,11 +2,18 @@ package org.personal.SimpleDBViewer.CRUDRepository;
 
 import java.util.List;
 
+import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.personal.SimpleDBViewer.domain.CPUListEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class CPUListEntityCRUDRepository {
+	@Autowired
+	private AbstractCRUDRepository repo;
+
 	public static void createCPUListEntity(SessionFactory s, CPUListEntity cpu) throws IllegalArgumentException {
 		// validate input
 		if(cpu == null) {
@@ -14,6 +21,18 @@ public class CPUListEntityCRUDRepository {
 		}
 
 		AbstractCRUDRepository.createEntity(s, cpu);
+	}
+
+	public CPUListEntity createCPUListEntity(String cpuName) throws IllegalArgumentException {
+		// validate input
+		if(cpuName.isEmpty()) {
+			throw new IllegalArgumentException("Input cpuName cannot be empty/null.");
+		}
+
+		CPUListEntity cpu = new CPUListEntity();
+		cpu.setName(cpuName);
+		this.repo.createEntity(cpu);
+		return cpu;
 	}
 
 	public static CPUListEntity createCPUListEntity(SessionFactory s, String cpuName) throws IllegalArgumentException {
