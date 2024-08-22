@@ -1,12 +1,12 @@
-package org.personal.SimpleDBViewer.WebTests;
+package org.personal.SimpleDBViewer.CRUDTests;
 
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.personal.SimpleDBViewer.EntityServices.CPUListEntityService;
-import org.personal.SimpleDBViewer.domain.CPUListEntity;
+import org.personal.SimpleDBViewer.CRUDRepository.CPUListEntityCRUDRepository;
+import org.personal.SimpleDBViewer.Domain.CPUListEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -16,7 +16,7 @@ import java.util.List;
 @SpringBootTest
 public class SpringCPUListCRUDTests {
     @Autowired
-    private CPUListEntityService cpuService;
+    private CPUListEntityCRUDRepository cpuRepo;
 
     private List<CPUListEntity> testCPUs;
 
@@ -29,7 +29,7 @@ public class SpringCPUListCRUDTests {
         // insert cpu into the database
         CPUListEntity c0 = new CPUListEntity();
         c0.setName("i7-11700KF");
-        cpuService.createCPU(c0);
+        cpuRepo.createCPUListEntity("i7-11700K");
         testCPUs.add(c0);
     }
 

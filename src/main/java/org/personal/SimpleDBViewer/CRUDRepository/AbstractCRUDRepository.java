@@ -10,17 +10,22 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+
 @Component
 public class AbstractCRUDRepository {
 	@Autowired
 	private EntityManagerFactory entityManagerFactory;
 
-	protected void createEntity(Object obj) {
+	private interface TransactionOperation {
+		public void op(EntityManager em);
+	}
+
+	private void inTransaction(TransactionOperation function) {
 		EntityManager entityManager = this.entityManagerFactory.createEntityManager();
 		EntityTransaction tx = entityManager.getTransaction();
 		try {
 			tx.begin();
-			entityManager.persist(obj);
+			function.op(entityManager);
 			tx.commit();
 		} catch(Exception e) {
 			if(tx.isActive()) tx.rollback();
@@ -28,6 +33,25 @@ public class AbstractCRUDRepository {
 		} finally {
 			entityManager.close();
 		}
+	}
+
+	protected void createEntity(Object obj) {
+		this.inTransaction(entityManager -> {
+			entityManager.persist(obj);
+		});
+
+//		EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+//		EntityTransaction tx = entityManager.getTransaction();
+//		try {
+//			tx.begin();
+//			entityManager.persist(obj);
+//			tx.commit();
+//		} catch(Exception e) {
+//			if(tx.isActive()) tx.rollback();
+//			throw e;
+//		} finally {
+//			entityManager.close();
+//		}
 	}
 
 

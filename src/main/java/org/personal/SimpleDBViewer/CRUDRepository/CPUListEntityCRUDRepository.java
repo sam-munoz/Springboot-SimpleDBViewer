@@ -2,10 +2,9 @@ package org.personal.SimpleDBViewer.CRUDRepository;
 
 import java.util.List;
 
-import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.personal.SimpleDBViewer.domain.CPUListEntity;
+import org.personal.SimpleDBViewer.Domain.CPUListEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

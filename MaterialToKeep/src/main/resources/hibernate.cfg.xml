@@ -17,6 +17,6 @@
         <property name="hibernate.connection.password"></property>
  
         <!-- add classes to map from here -->
-        <mapping class="org.personal.SimpleDBViewer.domain.CPUListEntity" />
+        <mapping class="org.personal.SimpleDBViewer.Domain.CPUListEntity" />
     </session-factory>
 </hibernate-configuration>

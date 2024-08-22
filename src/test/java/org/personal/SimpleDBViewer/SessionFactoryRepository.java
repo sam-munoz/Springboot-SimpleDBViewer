@@ -2,7 +2,7 @@ package org.personal.SimpleDBViewer;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.personal.SimpleDBViewer.domain.CPUListEntity;
+import org.personal.SimpleDBViewer.Domain.CPUListEntity;
 
 
 public class SessionFactoryRepository {

@@ -1,4 +1,4 @@
-package org.personal.SimpleDBViewer.domain;
+package org.personal.SimpleDBViewer.Domain;
 
 
 import java.util.Objects;

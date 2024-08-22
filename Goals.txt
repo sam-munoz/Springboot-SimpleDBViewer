@@ -1,2 +1,0 @@
-1. Ensure that web app launches in the unit test
-2. Ensure that we can have access to either the EntityManagerFactory or a SessionFactory

@@ -1,9 +1,9 @@
-package org.personal.SimpleDBViewer;
+// package org.personal.SimpleDBViewer;
 
-import org.personal.SimpleDBViewer.domain.CPUListEntity;
-import org.personal.SimpleDBViewer.domain.CPURankingSummaryEntity;
-import org.personal.SimpleDBViewer.domain.UsersCPURankingEntity;
-import org.personal.SimpleDBViewer.domain.UsersEntity;
+import org.personal.SimpleDBViewer.Domain.CPUListEntity;
+import org.personal.SimpleDBViewer.Domain.CPURankingSummaryEntity;
+import org.personal.SimpleDBViewer.Domain.UsersCPURankingEntity;
+import org.personal.SimpleDBViewer.Domain.UsersEntity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

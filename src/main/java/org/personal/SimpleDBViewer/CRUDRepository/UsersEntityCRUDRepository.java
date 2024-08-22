@@ -3,7 +3,7 @@ package org.personal.SimpleDBViewer.CRUDRepository;
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.personal.SimpleDBViewer.domain.UsersEntity;
+import org.personal.SimpleDBViewer.Domain.UsersEntity;
 
 public class UsersEntityCRUDRepository extends AbstractCRUDRepository {
 	public static void createUsersEntity(SessionFactory s, UsersEntity user) throws IllegalArgumentException {

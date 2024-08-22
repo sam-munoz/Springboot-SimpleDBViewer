@@ -4,10 +4,10 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.personal.SimpleDBViewer.domain.CPUListEntity;
-import org.personal.SimpleDBViewer.domain.UsersCPURankingEntity;
-import org.personal.SimpleDBViewer.domain.UsersCPURankingId;
-import org.personal.SimpleDBViewer.domain.UsersEntity;
+import org.personal.SimpleDBViewer.Domain.CPUListEntity;
+import org.personal.SimpleDBViewer.Domain.UsersCPURankingEntity;
+import org.personal.SimpleDBViewer.Domain.UsersCPURankingId;
+import org.personal.SimpleDBViewer.Domain.UsersEntity;
 
 public class UsersCPURankingCRUDRepository {
 	public static void createRankingEntity(SessionFactory s, UsersCPURankingEntity ranking) {

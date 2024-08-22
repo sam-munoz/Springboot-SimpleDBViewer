@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.personal.SimpleDBViewer.domain.CPUListEntity;
-import org.personal.SimpleDBViewer.domain.CPURankingSummaryEntity;
+import org.personal.SimpleDBViewer.Domain.CPUListEntity;
+import org.personal.SimpleDBViewer.Domain.CPURankingSummaryEntity;
 
 public class CPURankingSummaryCRUDRepository {
 	public static void createCPUSummaryEntity(SessionFactory s, CPURankingSummaryEntity summary) {

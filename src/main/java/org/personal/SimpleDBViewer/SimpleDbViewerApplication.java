@@ -2,29 +2,22 @@ package org.personal.SimpleDBViewer;
 
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
-import org.hibernate.Hibernate;
-import org.hibernate.Session;
-import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import static org.hibernate.cfg.AvailableSettings.*;
 
 import org.hibernate.cfg.Configuration;
 import org.personal.SimpleDBViewer.CRUDRepository.CPUListEntityCRUDRepository;
 import org.personal.SimpleDBViewer.CRUDRepository.CPURankingSummaryCRUDRepository;
 import org.personal.SimpleDBViewer.CRUDRepository.UsersCPURankingCRUDRepository;
 import org.personal.SimpleDBViewer.CRUDRepository.UsersEntityCRUDRepository;
-import org.personal.SimpleDBViewer.domain.CPUListEntity;
-import org.personal.SimpleDBViewer.domain.CPURankingSummaryEntity;
-import org.personal.SimpleDBViewer.domain.UsersCPURankingEntity;
-import org.personal.SimpleDBViewer.domain.UsersCPURankingId;
-import org.personal.SimpleDBViewer.domain.UsersEntity;
+import org.personal.SimpleDBViewer.Domain.CPUListEntity;
+import org.personal.SimpleDBViewer.Domain.CPURankingSummaryEntity;
+import org.personal.SimpleDBViewer.Domain.UsersCPURankingEntity;
+import org.personal.SimpleDBViewer.Domain.UsersCPURankingId;
+import org.personal.SimpleDBViewer.Domain.UsersEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 /*
  * Packages only needed for the for the executeDBCommands method
@@ -34,7 +27,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootApplication

@@ -1,4 +1,4 @@
-package org.personal.SimpleDBViewer;
+package org.personal.SimpleDBViewer.CRUDTests;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +9,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.personal.SimpleDBViewer.CRUDRepository.CPUListEntityCRUDRepository;
-import org.personal.SimpleDBViewer.domain.CPUListEntity;
+import org.personal.SimpleDBViewer.SimpleDbViewerApplication;
+import org.personal.SimpleDBViewer.Domain.CPUListEntity;
 
 public class CPUListEntityTest {
 	SessionFactory sessionFactory;
