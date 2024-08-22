@@ -144,16 +144,15 @@ public class SimpleDbViewerApplication {
 //		};
 //	}
 
-@RequestMapping("/")
-String home() {
-	return "Hello, world!";
-}
-	
 	public static void main(String[] args) {
+		// Start up SpringBoot application
 		ConfigurableApplicationContext container = SpringApplication.run(SimpleDbViewerApplication.class, args);
 
-//		CPUListEntityCRUDRepository repo = container.getBean(CPUListEntityCRUDRepository.class);
-//		repo.createCPUListEntity("Ryzen 5 5600X");
+		// initialize database
+		CPUListEntityCRUDRepository repo = container.getBean(CPUListEntityCRUDRepository.class);
+		repo.createCPU("i7-11700KF");
+		repo.createCPU("i3-8100");
+		repo.createCPU("Ryzen 5 5600X");
 
 //		for(String beanName : container.getBeanDefinitionNames()) {
 //			System.out.println(beanName);

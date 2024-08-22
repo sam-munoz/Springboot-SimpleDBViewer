@@ -1,14 +1,15 @@
 package org.personal.SimpleDBViewer.CRUDRepository;
 
-import java.util.List;
+//import java.util.List;
+//import org.hibernate.Session;
+//import org.hibernate.SessionFactory;
+//import org.personal.SimpleDBViewer.Domain.CPUListEntity;
+//import org.personal.SimpleDBViewer.Domain.UsersCPURankingEntity;
+//import org.personal.SimpleDBViewer.Domain.UsersCPURankingId;
+//import org.personal.SimpleDBViewer.Domain.UsersEntity;
+import org.springframework.stereotype.Repository;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.personal.SimpleDBViewer.Domain.CPUListEntity;
-import org.personal.SimpleDBViewer.Domain.UsersCPURankingEntity;
-import org.personal.SimpleDBViewer.Domain.UsersCPURankingId;
-import org.personal.SimpleDBViewer.Domain.UsersEntity;
-
+@Repository
 public class UsersCPURankingCRUDRepository {
 //	public static void createRankingEntity(SessionFactory s, UsersCPURankingEntity ranking) {
 //		AbstractCRUDRepository.createEntity(s, ranking);

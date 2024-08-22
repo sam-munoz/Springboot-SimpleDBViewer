@@ -1,11 +1,13 @@
 package org.personal.SimpleDBViewer.CRUDRepository;
 
-import java.util.List;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.personal.SimpleDBViewer.Domain.UsersEntity;
+//import java.util.List;
+//import org.hibernate.Session;
+//import org.hibernate.SessionFactory;
+//import org.personal.SimpleDBViewer.Domain.UsersEntity;
+import org.springframework.stereotype.Repository;
 
-public class UsersEntityCRUDRepository extends AbstractCRUDRepository {
+@Repository
+public class UsersEntityCRUDRepository {
 //	public static void createUsersEntity(SessionFactory s, UsersEntity user) throws IllegalArgumentException {
 //		// valid input
 //		if(user == null) {

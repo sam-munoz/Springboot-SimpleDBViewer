@@ -1,12 +1,13 @@
 package org.personal.SimpleDBViewer.CRUDRepository;
 
-import java.util.List;
+//import java.util.List;
+//import org.hibernate.Session;
+//import org.hibernate.SessionFactory;
+//import org.personal.SimpleDBViewer.Domain.CPUListEntity;
+//import org.personal.SimpleDBViewer.Domain.CPURankingSummaryEntity;
+import org.springframework.stereotype.Repository;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.personal.SimpleDBViewer.Domain.CPUListEntity;
-import org.personal.SimpleDBViewer.Domain.CPURankingSummaryEntity;
-
+@Repository
 public class CPURankingSummaryCRUDRepository {
 //	public static void createCPUSummaryEntity(SessionFactory s, CPURankingSummaryEntity summary) {
 //		AbstractCRUDRepository.createEntity(s, summary);
