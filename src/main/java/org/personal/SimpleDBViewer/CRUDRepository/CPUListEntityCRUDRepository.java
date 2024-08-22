@@ -2,6 +2,9 @@ package org.personal.SimpleDBViewer.CRUDRepository;
 
 import java.util.List;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.personal.SimpleDBViewer.Domain.CPUListEntity;
@@ -13,16 +16,19 @@ public class CPUListEntityCRUDRepository {
 	@Autowired
 	private AbstractCRUDRepository repo;
 
-	public static void createCPUListEntity(SessionFactory s, CPUListEntity cpu) throws IllegalArgumentException {
+	@Autowired
+	private EntityManagerFactory entityManagerFactory;
+
+	public CPUListEntity createCPU(CPUListEntity cpu) throws IllegalArgumentException {
 		// validate input
 		if(cpu == null) {
-			throw new IllegalArgumentException("Input CPUListEntity object cannot be null");
+			throw new IllegalArgumentException("Input cpu cannot be empty/null.");
 		}
 
-		AbstractCRUDRepository.createEntity(s, cpu);
+		return (CPUListEntity) this.repo.createEntity(cpu);
 	}
 
-	public CPUListEntity createCPUListEntity(String cpuName) throws IllegalArgumentException {
+	public CPUListEntity createCPU(String cpuName) throws IllegalArgumentException {
 		// validate input
 		if(cpuName.isEmpty()) {
 			throw new IllegalArgumentException("Input cpuName cannot be empty/null.");
@@ -30,86 +36,75 @@ public class CPUListEntityCRUDRepository {
 
 		CPUListEntity cpu = new CPUListEntity();
 		cpu.setName(cpuName);
-		this.repo.createEntity(cpu);
-		return cpu;
+		return (CPUListEntity) this.repo.createEntity(cpu);
 	}
 
-	public static CPUListEntity createCPUListEntity(SessionFactory s, String cpuName) throws IllegalArgumentException {
-		// validate input
-		if(cpuName.isEmpty()) {
-			throw new IllegalArgumentException("Input cpuName cannot be empty/null.");
-		}
-
-		CPUListEntity cpu = new CPUListEntity();
-		cpu.setName(cpuName);
-		AbstractCRUDRepository.createEntity(s, cpu);
-		return cpu;
-	}
-
-	public static CPUListEntity getCPU(SessionFactory s, CPUListEntity cpu) {
-		return getCPU(s, cpu.getId());
-	}
-
-	public static CPUListEntity getCPU(SessionFactory s, Long cpuId) throws IllegalArgumentException {
+	public CPUListEntity getCPU(Long cpuId) throws IllegalArgumentException {
 		// validate input
 		if(cpuId == null) {
-			throw new IllegalArgumentException("Input cpuId cannot be empty/null.");
+			throw new IllegalArgumentException("Input cpuId cannot be empty/null");
 		}
 
-		Session session = s.openSession();
-		CPUListEntity rtnCPU = null;
-		try {
-			session.beginTransaction();
-			rtnCPU = session.createSelectionQuery("from CPUListEntity where id = ?1", CPUListEntity.class)
-					.setParameter(1, cpuId)
-					.getSingleResult();
-			session.getTransaction().commit();
-		} catch(Exception e) {
-			if(session.getTransaction().isActive()) session.getTransaction().rollback();
-			throw e;
-		} finally {
-			session.close();
-		}
-		return rtnCPU;
+		return this.repo.getEntityById(cpuId, CPUListEntity.class);
 	}
 
-	public static CPUListEntity getCPU(SessionFactory s, String cpuName) throws IllegalArgumentException {
+	public CPUListEntity getCPU(String cpuName) throws IllegalArgumentException {
 		// validate input
 		if(cpuName.isEmpty()) {
 			throw new IllegalArgumentException("Input cpuName cannot be empty/null");
 		}
 
-		Session session = s.openSession();
 		CPUListEntity rtnCPU = null;
+		EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+		EntityTransaction tx = entityManager.getTransaction();
 		try {
-			session.beginTransaction();
-			rtnCPU = session.createSelectionQuery("from CPUListEntity where name = ?1", CPUListEntity.class)
-							.setParameter(1, cpuName)
-							.getSingleResultOrNull();
-			session.getTransaction().commit();
+			tx.begin();
+			rtnCPU = entityManager.createQuery("SELECT c FROM CPUListEntity c WHERE c.name = ?1", CPUListEntity.class)
+				.setParameter(1, cpuName)
+				.getSingleResult();
+            tx.commit();
 		} catch(Exception e) {
-			if(session.getTransaction().isActive()) session.getTransaction().rollback();
+			if(tx.isActive()) tx.rollback();
 			throw e;
 		} finally {
-			session.close();
+			entityManager.close();
 		}
+
 		return rtnCPU;
 	}
 
-	public static List<CPUListEntity> getAllCPUs(SessionFactory s) {
-		Session session = s.openSession();
-		List<CPUListEntity> rtnList = null;
+	public CPUListEntity getCPU(CPUListEntity cpu) throws IllegalArgumentException {
+		// validate input
+		if(cpu == null) {
+			throw new IllegalArgumentException("Input CPU cannot be empty/null");
+		}
+
+		if(cpu.getId() != null) {
+			return getCPU(cpu.getId());
+		} else if(cpu.getName().isEmpty()) {
+			return getCPU(cpu.getName());
+		} else {
+			throw new IllegalArgumentException("Input CPU cannot have both null id and name");
+		}
+	}
+
+	public List<CPUListEntity> getAllCPUs() {
+		List<CPUListEntity> cpulist = null;
+		EntityManager entityManager = this.entityManagerFactory.createEntityManager();
+		EntityTransaction tx = entityManager.getTransaction();
 		try {
-			session.beginTransaction();
-			rtnList = session.createSelectionQuery("from CPUListEntity", CPUListEntity.class).getResultList();
-			session.getTransaction().commit();
-		} catch (Exception e) {
-			if(session.getTransaction().isActive()) session.getTransaction().rollback();
+			tx.begin();
+			cpulist = entityManager.createQuery("SELECT c FROM CPUListEntity c", CPUListEntity.class)
+					.getResultList();
+			tx.commit();
+		} catch(Exception e) {
+			if(tx.isActive()) tx.rollback();
 			throw e;
 		} finally {
-			session.close();
+			entityManager.close();
 		}
-		return rtnList;
+
+		return cpulist;
 	}
 
 	public static void updateCPUListEntity(SessionFactory s, CPUListEntity cpu) throws IllegalArgumentException {
@@ -121,12 +116,21 @@ public class CPUListEntityCRUDRepository {
 		AbstractCRUDRepository.updateEntity(s, cpu);
 	}
 
-	public static void deleteCPUListEntity(SessionFactory s, CPUListEntity cpu) throws IllegalArgumentException {
+	public CPUListEntity updateCPU(CPUListEntity cpu) throws IllegalArgumentException {
 		// validate input
 		if(cpu == null) {
 			throw new IllegalArgumentException("Input CPUListEntity object cannot be null");
 		}
 
-		AbstractCRUDRepository.deleteEntity(s, cpu);
+		return (CPUListEntity) this.repo.updateEntity(cpu);
+	}
+
+	public void deleteCPU(CPUListEntity cpu) throws IllegalArgumentException {
+		// validate input
+		if(cpu == null) {
+			throw new IllegalArgumentException("Input CPUListEntity object cannot be null");
+		}
+
+		this.repo.deleteEntity(cpu.getId(), CPUListEntity.class);
 	}
 }
