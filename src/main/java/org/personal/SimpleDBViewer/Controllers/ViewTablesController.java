@@ -42,8 +42,9 @@ public class ViewTablesController {
      * @return Returns JSON data of all the entries of the UsersEntity table.
      */
     @GetMapping("/tables/users")
+    @CrossOrigin(origins="http://localhost:5500")
     public List<UsersEntity> viewUsersTable() {
-        return null;
+        return this.tablesService.getUsersTable();
     }
 
     /**

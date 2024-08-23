@@ -1,28 +1,51 @@
 package org.personal.SimpleDBViewer.CRUDRepository;
 
-//import java.util.List;
+import java.util.List;
 //import org.hibernate.Session;
 //import org.hibernate.SessionFactory;
 //import org.personal.SimpleDBViewer.Domain.CPUListEntity;
-//import org.personal.SimpleDBViewer.Domain.CPURankingSummaryEntity;
+import jakarta.persistence.EntityManagerFactory;
+import org.personal.SimpleDBViewer.Domain.CPUListEntity;
+import org.personal.SimpleDBViewer.Domain.CPURankingSummaryEntity;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class CPURankingSummaryCRUDRepository {
-//	public static void createCPUSummaryEntity(SessionFactory s, CPURankingSummaryEntity summary) {
-//		AbstractCRUDRepository.createEntity(s, summary);
-//	}
-//
-//	public static CPURankingSummaryEntity createCPUSummaryEntity(SessionFactory s, CPUListEntity cpu, Integer rankSum, Long count) {
-//		CPURankingSummaryEntity summary = new CPURankingSummaryEntity(cpu, rankSum, count);
-//		AbstractCRUDRepository.createEntity(s, summary);
-//		return summary;
-//	}
-//
-//	public static CPURankingSummaryEntity createCPUSummaryEntity(SessionFactory s, CPUListEntity cpu, Integer rankSum) {
-//		return createCPUSummaryEntity(s, cpu, rankSum, 1L);
-//	}
-//
+    @Autowired
+    private AbstractCRUDRepository repo;
+
+    @Autowired
+    private EntityManagerFactory entityManagerFactory;
+
+    public CPURankingSummaryEntity createSummary(CPURankingSummaryEntity summary) throws IllegalArgumentException {
+        if(summary == null) {
+            throw new IllegalArgumentException("Summary input cannot be null");
+        }
+
+        return (CPURankingSummaryEntity) this.repo.createEntity(summary);
+    }
+
+    public CPURankingSummaryEntity createSummary(CPUListEntity cpu, Integer rankSum) throws IllegalArgumentException {
+        if(cpu == null) {
+            throw new IllegalArgumentException("CPU input cannot be null");
+        } else if(rankSum == null) {
+            throw new IllegalArgumentException("Rank sum input cannot be null");
+        }
+
+        CPURankingSummaryEntity summary = new CPURankingSummaryEntity(cpu.getId());
+        summary.setRankSum(rankSum);
+        return (CPURankingSummaryEntity) this.repo.createEntity(summary);
+    }
+
+    public CPURankingSummaryEntity getSummary(CPURankingSummaryEntity summary) throws IllegalArgumentException {
+        if(summary == null) {
+            throw new IllegalArgumentException("Summary object cannot be null");
+        }
+
+        return this.repo.getEntityById(summary.getId(), CPURankingSummaryEntity.class);
+    }
+
 //	public static List<CPURankingSummaryEntity> getAllCPUSummaryEntities(SessionFactory s) {
 //		Session session = s.openSession();
 //		List<CPURankingSummaryEntity> rtnList = null;
@@ -58,8 +81,12 @@ public class CPURankingSummaryCRUDRepository {
 //	public static void updateCPUSummaryEntity(SessionFactory s, CPURankingSummaryEntity summary) {
 //		AbstractCRUDRepository.updateEntity(s, summary);
 //	}
-//
-//	public static void deleteCPUSummaryEntity(SessionFactory s, CPURankingSummaryEntity summary) {
-//		AbstractCRUDRepository.deleteEntity(s, summary);
-//	}
+
+    public void deleteSummary(CPURankingSummaryEntity summary) throws IllegalArgumentException {
+        if(summary == null) {
+            throw new IllegalArgumentException("Summary object cannot be null");
+        }
+
+        this.repo.deleteEntity(summary.getId(), CPURankingSummaryEntity.class);
+    }
 }

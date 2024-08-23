@@ -32,7 +32,11 @@ function populateTableWithData(globalData, tableName) {
         let tableDataRow = document.createElement("tr");
         for(let j=0; j<dataKeys.length; j++) {
             let tableDataCell = document.createElement("td");
-            tableDataCell.innerText = globalData[i][dataKeys[j]];
+            if(globalData[i][dataKeys[j]]) {
+                tableDataCell.innerText = globalData[i][dataKeys[j]];
+            } else {
+                tableDataCell.innerText = "N/A";
+            }
             tableDataRow.appendChild(tableDataCell);
         }
         tableRoot.appendChild(tableDataRow);
@@ -58,4 +62,5 @@ function populateTableWithData(globalData, tableName) {
 }
 
 // when the page loads, get data from the database
-fetchData("http://localhost:8080/tables/cpus", "CPUListEntity")
+// fetchData("http://localhost:8080/tables/cpus", "CPUListEntity")
+fetchData("http://localhost:8080/tables/users", "UsersEntity")

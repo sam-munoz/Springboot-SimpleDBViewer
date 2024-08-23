@@ -2,18 +2,15 @@ package org.personal.SimpleDBViewer.Domain;
 
 import java.util.Objects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name="cpurankingsummary")
 public class CPURankingSummaryEntity {
 	@Id
+	@Column(name="cpurankingsummaryId")
+	private Long id;
+
 	@OneToOne(optional=false, fetch=FetchType.EAGER)
 	@MapsId
 	private CPUListEntity cpu;
@@ -26,14 +23,21 @@ public class CPURankingSummaryEntity {
 	
 	public CPURankingSummaryEntity() {}
 
-	public CPURankingSummaryEntity(CPUListEntity cpu, Integer rankSum, Long count) {
-		super();
-		this.cpu = cpu;
+	public CPURankingSummaryEntity(Long cpuId) {
+		this.id = cpuId;
+	}
+
+	public CPURankingSummaryEntity(Long cpuID, Integer rankSum, Long count) {
+		this.id = cpuID;
 		this.rankSum = rankSum;
 		this.count = count;
 	}
 
-	public CPUListEntity getCpuId() {
+	public Long getId() {
+		return id;
+	}
+
+	public CPUListEntity getCPU() {
 		return cpu;
 	}
 

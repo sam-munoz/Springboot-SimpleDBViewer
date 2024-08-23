@@ -36,11 +36,10 @@ public class GetTablesService {
 
     /**
      * Returns all the Users entities stored in the database.
-     * Method has not been implemented
      * @return Lists all Users entities stores the database.
      */
     public List<UsersEntity> getUsersTable() {
-        return null;
+        return this.userRepo.getAllUsers();
     }
 
     /**

@@ -148,11 +148,17 @@ public class SimpleDbViewerApplication {
 		// Start up SpringBoot application
 		ConfigurableApplicationContext container = SpringApplication.run(SimpleDbViewerApplication.class, args);
 
-		// initialize database
-		CPUListEntityCRUDRepository repo = container.getBean(CPUListEntityCRUDRepository.class);
-		repo.createCPU("i7-11700KF");
-		repo.createCPU("i3-8100");
-		repo.createCPU("Ryzen 5 5600X");
+		// initialize cpu table
+		CPUListEntityCRUDRepository cpuRepo = container.getBean(CPUListEntityCRUDRepository.class);
+		cpuRepo.createCPU("i7-11700KF");
+		cpuRepo.createCPU("i3-8100");
+		cpuRepo.createCPU("Ryzen 5 5600X");
+
+		// initialize user table
+		UsersEntityCRUDRepository userRepo = container.getBean(UsersEntityCRUDRepository.class);
+		userRepo.createUser("Sam");
+		userRepo.createUser("Ricardo", "best");
+		userRepo.createUser("Israel");
 
 //		for(String beanName : container.getBeanDefinitionNames()) {
 //			System.out.println(beanName);
