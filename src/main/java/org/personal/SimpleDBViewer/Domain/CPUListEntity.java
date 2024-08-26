@@ -29,7 +29,11 @@ public class CPUListEntity {
 //	private CPURankingSummaryEntity summary;
 	
 	public CPUListEntity() {}
-	
+
+	public CPUListEntity(String name) {
+		this.name = name;
+	}
+
 	public CPUListEntity(Long id, String name) {
 		super();
 		this.id = id;

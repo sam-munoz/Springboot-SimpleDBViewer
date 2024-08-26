@@ -5,11 +5,13 @@ import java.util.List;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.personal.SimpleDBViewer.Domain.CPUListEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.dao.EmptyResultDataAccessException;
+
+import org.hibernate.SessionFactory;
+import org.hibernate.Session;
 
 @Repository
 public class CPUListEntityCRUDRepository {
@@ -81,7 +83,7 @@ public class CPUListEntityCRUDRepository {
 
 		if(cpu.getId() != null) {
 			return getCPU(cpu.getId());
-		} else if(cpu.getName().isEmpty()) {
+		} else if(cpu.getName() != null && !cpu.getName().isEmpty()) {
 			return getCPU(cpu.getName());
 		} else {
 			throw new IllegalArgumentException("Input CPU cannot have both null id and name");
