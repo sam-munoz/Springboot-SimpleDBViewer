@@ -1,7 +1,5 @@
 package org.personal.SimpleDBViewer;
 
-import jakarta.persistence.EntityManagerFactory;
-import org.assertj.core.api.Assertions;
 import org.hibernate.SessionFactory;
 
 import org.hibernate.cfg.Configuration;
@@ -12,13 +10,10 @@ import org.personal.SimpleDBViewer.CRUDRepository.UsersEntityCRUDRepository;
 import org.personal.SimpleDBViewer.Domain.CPUListEntity;
 import org.personal.SimpleDBViewer.Domain.CPURankingSummaryEntity;
 import org.personal.SimpleDBViewer.Domain.UsersCPURankingEntity;
-import org.personal.SimpleDBViewer.Domain.UsersCPURankingId;
 import org.personal.SimpleDBViewer.Domain.UsersEntity;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 /*
  * Packages only needed for the for the executeDBCommands method
@@ -32,10 +27,6 @@ import java.util.List;
 
 @SpringBootApplication
 public class SimpleDbViewerApplication {
-
-	@Autowired
-	private EntityManagerFactory entityManager;
-
 	/*
 	 * This code was written based on the following Youtube video
 	 * 	- https://www.youtube.com/watch?v=KgXq2UBNEhA
@@ -67,15 +58,15 @@ public class SimpleDbViewerApplication {
 		}
 	}
 	
-	protected static SessionFactory buildSessionFactory() {
-		SessionFactory sf = new Configuration()
-				.addAnnotatedClass(CPUListEntity.class)
-				.addAnnotatedClass(UsersEntity.class)
-				.addAnnotatedClass(UsersCPURankingEntity.class)
-				.addAnnotatedClass(CPURankingSummaryEntity.class)
-				.buildSessionFactory();
-		return sf;
-	}
+//	protected static SessionFactory buildSessionFactory() {
+//		SessionFactory sf = new Configuration()
+//				.addAnnotatedClass(CPUListEntity.class)
+//				.addAnnotatedClass(UsersEntity.class)
+//				.addAnnotatedClass(UsersCPURankingEntity.class)
+//				.addAnnotatedClass(CPURankingSummaryEntity.class)
+//				.buildSessionFactory();
+//		return sf;
+//	}
 	
 //	public static void printTable(SessionFactory s, int tableNum) {
 //		if(tableNum == 0) {
@@ -145,49 +136,29 @@ public class SimpleDbViewerApplication {
 //		};
 //	}
 
-	static void testCreateCPU(CPUListEntityCRUDRepository cpuRepo, String cpuName) {
-		try {
-			cpuRepo.createCPU(cpuName);
-		} catch(IllegalArgumentException e) {
-			return;
-		}
-
-		// get cpu
-		CPUListEntity cpuInDB = cpuRepo.getCPU(cpuName);
-
-		// assert if the correct cpu was returned
-		if(cpuInDB.getName().equals(cpuName)) {
-			System.out.println("No errors.");
-		} else {
-			System.out.println(cpuInDB.getName() + "\n" + cpuName + "\nCPUs differ");
-		}
-	}
-
-
 	public static void main(String[] args) {
 		// Start up SpringBoot application
 		ConfigurableApplicationContext container = SpringApplication.run(SimpleDbViewerApplication.class, args);
 
+		// create a cpu summary
+		CPURankingSummaryCRUDRepository summaryRepo = container.getBean(CPURankingSummaryCRUDRepository.class);
+		summaryRepo.createSummary(
+			new CPURankingSummaryEntity(new CPUListEntity("i7-11700KF"), 12, 2L)
+		);
+
 		// initialize cpu table
-		CPUListEntityCRUDRepository cpuRepo = container.getBean(CPUListEntityCRUDRepository.class);
-		cpuRepo.createCPU("i7-11700KF");
-		cpuRepo.createCPU("i3-8100");
-
-		testCreateCPU(cpuRepo, "i3-8100");
-
+//		CPUListEntityCRUDRepository cpuRepo = container.getBean(CPUListEntityCRUDRepository.class);
+//		cpuRepo.createCPU("i7-11700KF");
+//		cpuRepo.createCPU("i3-8100");
 
 		// initialize user table
-		UsersEntityCRUDRepository userRepo = container.getBean(UsersEntityCRUDRepository.class);
-		userRepo.createUser("Sam");
-		userRepo.createUser("Ricardo", "best");
-		userRepo.createUser("Israel");
-
-		container.close();
+//		UsersEntityCRUDRepository userRepo = container.getBean(UsersEntityCRUDRepository.class);
+//		userRepo.createUser("Sam");
+//		userRepo.createUser("Ricardo", "best");
+//		userRepo.createUser("Israel");
 
 //		for(String beanName : container.getBeanDefinitionNames()) {
 //			System.out.println(beanName);
 //		}
-
-//		executeDBCommands();
 	}
 }

@@ -11,7 +11,7 @@ public class CPURankingSummaryEntity {
 	@Column(name="cpurankingsummaryId")
 	private Long id;
 
-	@OneToOne(optional=false, fetch=FetchType.EAGER)
+	@OneToOne(optional=false, fetch=FetchType.EAGER, cascade=CascadeType.ALL)
 	@MapsId
 	private CPUListEntity cpu;
 	
@@ -27,8 +27,15 @@ public class CPURankingSummaryEntity {
 		this.id = cpuId;
 	}
 
-	public CPURankingSummaryEntity(Long cpuID, Integer rankSum, Long count) {
+	public CPURankingSummaryEntity(CPUListEntity cpu, Integer rankSum, Long count) {
+		this.cpu = cpu;
+		this.rankSum = rankSum;
+		this.count = count;
+	}
+
+	public CPURankingSummaryEntity(Long cpuID, CPUListEntity cpu, Integer rankSum, Long count) {
 		this.id = cpuID;
+		this.cpu = cpu;
 		this.rankSum = rankSum;
 		this.count = count;
 	}
@@ -37,8 +44,16 @@ public class CPURankingSummaryEntity {
 		return id;
 	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public CPUListEntity getCPU() {
 		return cpu;
+	}
+
+	public void setCPU(CPUListEntity cpu) {
+		this.cpu = cpu;
 	}
 
 	public Long getCount() {
@@ -59,7 +74,12 @@ public class CPURankingSummaryEntity {
 
 	@Override
 	public String toString() {
-		return "CPURankingSummaryEntity [cpu=" + cpu + ", rankSum=" + rankSum + ", count=" + count + "]";
+		return "CPURankingSummaryEntity{" +
+				"id=" + id +
+				", cpu=" + cpu +
+				", rankSum=" + rankSum +
+				", count=" + count +
+				'}';
 	}
 
 	@Override

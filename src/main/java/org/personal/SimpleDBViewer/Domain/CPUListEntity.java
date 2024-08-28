@@ -2,17 +2,11 @@ package org.personal.SimpleDBViewer.Domain;
 
 import java.util.Objects;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name="cpulist")
 public class CPUListEntity {
-	
 	@Column(name="cpulist_id")
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -20,15 +14,12 @@ public class CPUListEntity {
 	
 	@Column(name="cpulist_name")
 	private String name;
-	
-//	Cannot get this work to work correctly
-//	@OneToMany(mappedBy="cpu", cascade=CascadeType.REMOVE)
-//	Set<UsersCPURankingEntity> rankings;
-	
-//	@OneToOne(mappedBy="cpu")
-//	private CPURankingSummaryEntity summary;
-	
+
 	public CPUListEntity() {}
+
+	public CPUListEntity(Long id) {
+		this.id = id;
+	}
 
 	public CPUListEntity(String name) {
 		this.name = name;
@@ -56,10 +47,6 @@ public class CPUListEntity {
 		this.name = name;
 	}
 	
-//	public Set<UsersCPURankingEntity> getRankings() {
-//		return rankings;
-//	}
-
 	@Override
 	public String toString() {
 		return "CPUListEntity [id=" + id + ", name=" + name + "]";

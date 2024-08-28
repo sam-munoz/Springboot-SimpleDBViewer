@@ -6,6 +6,20 @@ async function fetchData(url, tableName) {
     }
 }
 
+function generateRequestData(event) {
+    baseurl = "http://localhost:8080/tables/"
+    curr_select = event.target[event.target.selectedIndex].innerText.toLowerCase()
+    if(curr_select === "cpus") {
+        return [baseurl + "cpus", "CPUListEnttiy"];
+    } else if(curr_select === "users") {
+        return [baseurl + "users", "UsersEntity"];
+    } else if(curr_select === "rankings") {
+        return [baseurl + "rankings", "UsersCPURankingEntity"];
+    } else if(curr_select === "summaries") {
+        return [baseurl + "summaries", "CPURankingSummaryEntity"];
+    }
+}
+
 function populateTableWithData(globalData, tableName) {
     // terminate program if no data is provided
     if(globalData == null) {
@@ -61,6 +75,15 @@ function populateTableWithData(globalData, tableName) {
     }
 }
 
+// add event handlers
+document.getElementById("select-db-table").addEventListener("change", (e) => {
+    // get data for fetching data
+    requestData = generateRequestData(e);
+
+    // fetch and update page
+    fetchData(requestData[0], requestData[1]);
+});
+
 // when the page loads, get data from the database
 // fetchData("http://localhost:8080/tables/cpus", "CPUListEntity")
-fetchData("http://localhost:8080/tables/users", "UsersEntity")
+// fetchData("http://localhost:8080/tables/users", "UsersEntity")
