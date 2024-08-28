@@ -1,6 +1,7 @@
 package org.personal.SimpleDBViewer;
 
 import jakarta.persistence.EntityManagerFactory;
+import org.assertj.core.api.Assertions;
 import org.hibernate.SessionFactory;
 
 import org.hibernate.cfg.Configuration;
@@ -144,6 +145,25 @@ public class SimpleDbViewerApplication {
 //		};
 //	}
 
+	static void testCreateCPU(CPUListEntityCRUDRepository cpuRepo, String cpuName) {
+		try {
+			cpuRepo.createCPU(cpuName);
+		} catch(IllegalArgumentException e) {
+			return;
+		}
+
+		// get cpu
+		CPUListEntity cpuInDB = cpuRepo.getCPU(cpuName);
+
+		// assert if the correct cpu was returned
+		if(cpuInDB.getName().equals(cpuName)) {
+			System.out.println("No errors.");
+		} else {
+			System.out.println(cpuInDB.getName() + "\n" + cpuName + "\nCPUs differ");
+		}
+	}
+
+
 	public static void main(String[] args) {
 		// Start up SpringBoot application
 		ConfigurableApplicationContext container = SpringApplication.run(SimpleDbViewerApplication.class, args);
@@ -152,13 +172,17 @@ public class SimpleDbViewerApplication {
 		CPUListEntityCRUDRepository cpuRepo = container.getBean(CPUListEntityCRUDRepository.class);
 		cpuRepo.createCPU("i7-11700KF");
 		cpuRepo.createCPU("i3-8100");
-		cpuRepo.createCPU("Ryzen 5 5600X");
+
+		testCreateCPU(cpuRepo, "i3-8100");
+
 
 		// initialize user table
 		UsersEntityCRUDRepository userRepo = container.getBean(UsersEntityCRUDRepository.class);
 		userRepo.createUser("Sam");
 		userRepo.createUser("Ricardo", "best");
 		userRepo.createUser("Israel");
+
+		container.close();
 
 //		for(String beanName : container.getBeanDefinitionNames()) {
 //			System.out.println(beanName);

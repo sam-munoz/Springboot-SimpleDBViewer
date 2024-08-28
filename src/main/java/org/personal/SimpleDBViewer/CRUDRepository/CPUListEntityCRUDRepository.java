@@ -5,13 +5,11 @@ import java.util.List;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
+import jakarta.persistence.NoResultException;
 import org.personal.SimpleDBViewer.Domain.CPUListEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.dao.EmptyResultDataAccessException;
-
-import org.hibernate.SessionFactory;
-import org.hibernate.Session;
 
 @Repository
 public class CPUListEntityCRUDRepository {
@@ -27,7 +25,21 @@ public class CPUListEntityCRUDRepository {
 			throw new IllegalArgumentException("Input cpu cannot be empty/null.");
 		}
 
-		return (CPUListEntity) this.repo.createEntity(cpu);
+		// prevent the creation of these objects if they already exist in the database
+		CPUListEntity fetchCPU;
+		try {
+			fetchCPU = getCPU(cpu);
+		} catch(EmptyResultDataAccessException | NoResultException e) {
+			fetchCPU = null;
+		}
+		// entity already exists in the database
+		if(fetchCPU != null) {
+			throw new IllegalArgumentException("CPUListEntity " + cpu.toString() + " already exists in the database");
+		}
+		// otherwise, create these entities
+		else {
+			return (CPUListEntity) this.repo.createEntity(cpu);
+		}
 	}
 
 	public CPUListEntity createCPU(String cpuName) throws IllegalArgumentException {
@@ -36,9 +48,11 @@ public class CPUListEntityCRUDRepository {
 			throw new IllegalArgumentException("Input cpuName cannot be empty/null.");
 		}
 
+		// create CPUListEntities for creation
 		CPUListEntity cpu = new CPUListEntity();
 		cpu.setName(cpuName);
-		return (CPUListEntity) this.repo.createEntity(cpu);
+
+		return createCPU(cpu);
 	}
 
 	public CPUListEntity getCPU(Long cpuId) throws IllegalArgumentException {
@@ -109,21 +123,18 @@ public class CPUListEntityCRUDRepository {
 		return cpulist;
 	}
 
-	public static void updateCPUListEntity(SessionFactory s, CPUListEntity cpu) throws IllegalArgumentException {
-		// validate input
-		if(cpu == null) {
-			throw new IllegalArgumentException("Input CPUListEntity object cannot be null");
-		}
-
-		AbstractCRUDRepository.updateEntity(s, cpu);
-	}
-
 	public CPUListEntity updateCPU(CPUListEntity cpu) throws IllegalArgumentException {
 		// validate input
 		if(cpu == null) {
 			throw new IllegalArgumentException("Input CPUListEntity object cannot be null");
 		}
 
+		// check that the cpu object has valid entries for all of its fields
+		if(cpu.getName().isEmpty()) {
+			throw new IllegalArgumentException("CPU name is not valid");
+		}
+
+		// otherwise, update entity (assuming cpu is a entity)
 		return (CPUListEntity) this.repo.updateEntity(cpu);
 	}
 
