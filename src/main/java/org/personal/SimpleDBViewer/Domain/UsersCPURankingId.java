@@ -1,62 +1,51 @@
 package org.personal.SimpleDBViewer.Domain;
 
-
+import jakarta.persistence.Embeddable;
+import java.io.Serializable;
 import java.util.Objects;
 
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToOne;
-
 @Embeddable
-public class UsersCPURankingId {
-	@ManyToOne(fetch=FetchType.LAZY)
-	private CPUListEntity cpu;
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	private UsersEntity user;
-	
-	public UsersCPURankingId() {}
-	
-	public UsersCPURankingId(CPUListEntity cpu, UsersEntity user) {
-		this.cpu = cpu;
-		this.user = user;
-	}
+public class UsersCPURankingId implements Serializable {
+    private Long cpuId;
+    private Long userId;
 
-	public CPUListEntity getCpu() {
-		return cpu;
-	}
+    public UsersCPURankingId() {}
 
-	public void setCpu(CPUListEntity cpu) {
-		this.cpu = cpu;
-	}
+    public UsersCPURankingId(Long cpuId, Long userId) {
+        this.cpuId = cpuId;
+        this.userId = userId;
+    }
 
-	public UsersEntity getUser() {
-		return user;
-	}
+    public Long getCpuId() {
+        return cpuId;
+    }
 
-	public void setUser(UsersEntity user) {
-		this.user = user;
-	}
+    public void setCpuId(Long cpuId) {
+        this.cpuId = cpuId;
+    }
 
-	@Override
-	public String toString() {
-		return "UsersCPURankingId [cpu=" + cpu + ", user=" + user + "]";
-	}
+    public Long getUserId() {
+        return userId;
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(cpu, user);
-	}
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		UsersCPURankingId other = (UsersCPURankingId) obj;
-		return Objects.equals(cpu, other.cpu) && Objects.equals(user, other.user);
-	}
+    public boolean hasNullId() {
+        return this.cpuId == null || this.userId == null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UsersCPURankingId that = (UsersCPURankingId) o;
+        return Objects.equals(cpuId, that.cpuId) && Objects.equals(userId, that.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(cpuId, userId);
+    }
 }

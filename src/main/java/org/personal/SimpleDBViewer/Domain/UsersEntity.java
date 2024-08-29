@@ -8,20 +8,22 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.NaturalId;
 
 @Entity
-@Table(name="users")
+@Table(name="voter")
 public class UsersEntity {
 	
-	@Column(name="usersId")
+	@Column(name="voterId")
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long id;
 	
-	@Column(name="usersName")
+	@Column(name="voterName")
+//	@NaturalId
 	private String name;
 
-	@Column(name="usersPasswd")
+	@Column(name="voterPasswd")
 	private String passwd;
 	
 //	Cannot get this to work correctly
@@ -29,6 +31,20 @@ public class UsersEntity {
 //	Set<UsersCPURankingEntity> rankings;
 	
 	public UsersEntity() {}
+
+	public UsersEntity(String name) {
+		this.name = name;
+	}
+
+	public UsersEntity(Long id, String name) {
+		this.id = id;
+		this.name = name;
+	}
+
+	public UsersEntity(String name, String passwd) {
+		this.name = name;
+		this.passwd = passwd;
+	}
 
 	public UsersEntity(Long id, String name, String passwd) {
 		super();

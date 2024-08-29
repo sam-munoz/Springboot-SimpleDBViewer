@@ -60,6 +60,18 @@ public class UsersEntityCRUDRepository {
         return (UsersEntity) this.repo.getEntityById(userId, UsersEntity.class);
     }
 
+    public UsersEntity getUser(UsersEntity user) throws NullPointerException, IllegalArgumentException {
+        // validate user input. userId cannot be empty
+        if(user == null) {
+            throw new NullPointerException("Input user is null");
+        }
+        if(user.getId() == null) {
+            throw new IllegalArgumentException("Input user id is null");
+        }
+
+        return getUser(user.getId());
+    }
+
     public List<UsersEntity> getAllUsers() {
         List<UsersEntity> rtnList = null;
         EntityManager entityManager = this.entityManagerFactory.createEntityManager();

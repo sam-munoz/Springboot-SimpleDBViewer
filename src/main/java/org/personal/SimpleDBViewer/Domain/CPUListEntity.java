@@ -3,6 +3,7 @@ package org.personal.SimpleDBViewer.Domain;
 import java.util.Objects;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.NaturalId;
 
 @Entity
 @Table(name="cpulist")
@@ -13,6 +14,7 @@ public class CPUListEntity {
 	private Long id;
 	
 	@Column(name="cpulist_name")
+//	@NaturalId
 	private String name;
 
 	public CPUListEntity() {}
@@ -46,7 +48,7 @@ public class CPUListEntity {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "CPUListEntity [id=" + id + ", name=" + name + "]";
