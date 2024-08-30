@@ -41,6 +41,7 @@ public class UsersCPURankingCRUDRepository {
             throw new NullPointerException("Input ranking object is null");
         }
 
+        System.out.println(id);
         return repo.getEntityById(id, UsersCPURankingEntity.class);
     }
 

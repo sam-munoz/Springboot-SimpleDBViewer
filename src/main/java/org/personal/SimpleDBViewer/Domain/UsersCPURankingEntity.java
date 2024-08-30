@@ -110,12 +110,20 @@ public class UsersCPURankingEntity {
 
 	@Override
 	public String toString() {
-		return "UsersCPURankingEntity{" +
-				"id=" + id +
-				", cpu=" + cpu.toString() +
-				", user=" + user.toString() +
-				", ranking=" + ranking +
-				'}';
+		String rtnString = "UsersCPURankingEntity{";
+		rtnString += "id=" + id;
+		if(this.cpu == null) {
+			rtnString += ", cpu=null";
+		} else {
+			rtnString += ", cpu=" + cpu.toString();
+		}
+		if(this.user == null) {
+			rtnString += ", user=null";
+		} else {
+			rtnString += ", user=" + user.toString();
+		}
+		rtnString += ", ranking=" + ranking + '}';
+		return rtnString;
 	}
 
 	@Override

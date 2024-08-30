@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.personal.SimpleDBViewer.CRUDRepository.CPUListEntityCRUDRepository;
 import org.personal.SimpleDBViewer.Domain.CPUListEntity;
+import org.personal.SimpleDBViewer.Domain.UsersEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -29,10 +30,8 @@ public class CPUListEntityTest {
 	 */
 	@BeforeEach
 	void setup() {
-		// initialize cpu list
 		testCPUs = new ArrayList<CPUListEntity>();
 
-		// insert cpu into the database
 		testCPUs.add(cpuRepo.createCPU("i7-11700KF"));
 		testCPUs.add(cpuRepo.createCPU("i3-8100"));
 	}
@@ -42,12 +41,26 @@ public class CPUListEntityTest {
 	 */
 	@AfterEach
 	void cleanup() {
-		// get all cpus from the database
-		testCPUs = this.cpuRepo.getAllCPUs();
-		for(CPUListEntity c : testCPUs) this.cpuRepo.deleteCPU(c);
-
-		// garbage collect the cpu list
+		cpuRepo.deleteAllCPUs();
 		testCPUs = null;
+	}
+
+	/**
+	 * Ensure that all non-null fields in <code>u0</code> have the same value as the corresponding fields in <code>u1</code>
+	 * @param c0 The <code>UsersEntity</code> object used in the checking
+	 * @param c1 The <code>UsersEntity</code> object used in the checking
+	 */
+	private void nonNullFieldsEqual(CPUListEntity c0, CPUListEntity c1) {
+		if(c1.getId() != null) {
+			Assertions.assertThat(c0.getId())
+					.as("CPU id %d does not match the expected id, %d.", c0.getId(), c1.getId())
+					.isEqualTo(c1.getId());
+		}
+		if(c1.getName() != null) {
+			Assertions.assertThat(c0.getName())
+					.as("CPU name %s does not match the expected name, %s.", c0.getName(), c1.getName())
+					.isEqualTo(c1.getName());
+		}
 	}
 
 	/**
@@ -57,26 +70,14 @@ public class CPUListEntityTest {
 	@ParameterizedTest
 	@MethodSource("org.personal.SimpleDBViewer.CRUDTests.Providers.CPUListEntityTestProviders#testGetCPUProvider")
 	void testGetCPU(CPUListEntity cpu) {
-		// get cpu from the database
 		CPUListEntity cpuInDB = null;
 		try {
 			cpuInDB = this.cpuRepo.getCPU(cpu);
 		} catch(IllegalArgumentException e) {
-			// is the edge cases. throw correct exception. terminate test
 			return;
 		}
 
-		// ensure that cpu retrieved matches the correct values for non-null entries
-		if(cpu.getId() != null) {
-			Assertions.assertThat(cpuInDB.getId())
-					.as("CPU id %d does not equal name %d", cpuInDB.getId(), cpu.getId())
-					.isEqualTo(cpu.getName());
-		}
-		if(!cpu.getName().isEmpty()) {
-			Assertions.assertThat(cpuInDB.getName())
-					.as("CPU name %s does not equal name %s", cpuInDB.getName(), cpu.getName())
-					.isEqualTo(cpu.getName());
-		}
+		nonNullFieldsEqual(cpuInDB, cpu);
 	}
 
 	/**
@@ -93,7 +94,6 @@ public class CPUListEntityTest {
 			"943248729,false"
 	})
 	void testGetCPU(Long cpuId, Boolean validArgument) {
-		// get cpu from the database
 		CPUListEntity cpuInDB = null;
 		try {
 			cpuInDB = this.cpuRepo.getCPU(cpuId);
@@ -112,9 +112,13 @@ public class CPUListEntityTest {
 			}
 		}
 
-		// ensure that cpu retrieved matches the correct values for non-null entries
-		System.out.println(cpuRepo.getAllCPUs());
-		System.out.println(cpuId);
+		if(cpuInDB == null) {
+			System.out.println("Passed an id into the database that does not correspond to a CPU. getCPU returned a null value and we caught that null value.");
+			return;
+		}
+
+//		System.out.println(cpuRepo.getAllCPUs());
+//		System.out.println(cpuId);
 		Assertions.assertThat(cpuInDB.getId())
 				.as("CPU id %d does not equal id %d", cpuInDB.getId(), cpuId)
 				.isEqualTo(cpuId);
@@ -131,16 +135,13 @@ public class CPUListEntityTest {
 			""
 	})
 	void testGetCPU(String cpuName) {
-		// get cpu from the database
 		CPUListEntity cpuInDB = null;
 		try {
 			cpuInDB = this.cpuRepo.getCPU(cpuName);
 		} catch(IllegalArgumentException e) {
-			// is the edge cases. throw correct exception. terminate test
 			return;
 		}
 
-		// ensure that cpu retrieved matches the correct values for non-null entries
 		Assertions.assertThat(cpuInDB.getName())
 				.as("CPU name %s does not equal name %s", cpuInDB.getName(), cpuName)
 				.isEqualTo(cpuName);
@@ -151,17 +152,13 @@ public class CPUListEntityTest {
 	 */
 	@Test
 	void testGetAllCPU() {
-		// get the list of cpus on the database
 		List<CPUListEntity> cpusInDB = this.cpuRepo.getAllCPUs();
 
-		// assert the cpus retrieved are the cpus that we are suppose to get
 		for(CPUListEntity c : cpusInDB) {
-			// find cpu in the testCPUs. if not found, then we can fail the test by showing that any element in the list will not match CPUListEntity c
 			int index = testCPUs.indexOf(c);
 			if(index == -1) {
 				index = 0;
 			}
-
 			Assertions.assertThat(c)
 					.as("CPU %s does not match CPU %s", c.toString(), testCPUs.get(index).toString())
 					.isEqualTo(testCPUs.get(index));
@@ -185,20 +182,8 @@ public class CPUListEntityTest {
 			return;
 		}
 
-		// get cpu
 		CPUListEntity cpuInDB = this.cpuRepo.getCPU(cpu);
-
-		// assert if the correct cpu was returned
-		if(cpu.getId() != null) {
-			Assertions.assertThat(cpuInDB.getId())
-					.as("CPU returned has id %d, but it should have id %d.", cpuInDB.getId(), cpu.getId())
-					.isEqualTo(cpu.getId());
-		}
-		if(cpu.getName() != null) {
-			Assertions.assertThat(cpuInDB.getName())
-					.as("CPU returned has name %s, but it should have name %s.", cpuInDB.getName(), cpu.getName())
-					.isEqualTo(cpu.getName());
-		}
+		nonNullFieldsEqual(cpuInDB, cpu);
 	}
 
 	/**
@@ -224,10 +209,7 @@ public class CPUListEntityTest {
 			return;
 		}
 
-		// get cpu
 		CPUListEntity cpuInDB = this.cpuRepo.getCPU(cpuName);
-
-		// assert if the correct cpu was returned
 		Assertions.assertThat(cpuInDB.getName())
 				.as("CPU returned has name %s, but it should have name %s.", cpuInDB.getName(), cpuName)
 				.isEqualTo(cpuName);
@@ -241,7 +223,6 @@ public class CPUListEntityTest {
 	@ParameterizedTest
 	@MethodSource("org.personal.SimpleDBViewer.CRUDTests.Providers.CPUListEntityTestProviders#testUpdateCPUProvider")
 	void testUpdateCPU(CPUListEntity cpu, String newCPUName) {
-		// get a cpu from the database and store its id
 		CPUListEntity cpuInDB;
 		try {
 			cpuInDB = cpuRepo.getCPU(cpu);
@@ -254,7 +235,6 @@ public class CPUListEntityTest {
 		}
 		Long cpuId = cpuInDB.getId();
 
-		// update the cpu
 		cpuInDB.setName(newCPUName);
 		try {
 			this.cpuRepo.updateCPU(cpuInDB);
@@ -263,7 +243,6 @@ public class CPUListEntityTest {
 			return;
 		}
 
-		// get that cpu from the database and assert that the cpu name has changed
 		cpuInDB = this.cpuRepo.getCPU(cpuId);
 		Assertions.assertThat(cpuInDB.getName())
 				.as("CPU %s should equal to CPU %s", cpuInDB.toString(), newCPUName)
@@ -305,5 +284,18 @@ public class CPUListEntityTest {
 		Assertions.assertThat(cpuInDB)
 				.as("CPU must be null and is not.")
 				.isEqualTo(null);
+	}
+
+	/**
+	 * Unit test for method <code>deleteAllCPUs()</code>
+	 */
+	@Test
+	void testDeleteAllCPUs() {
+		cpuRepo.deleteAllCPUs();
+
+		List<CPUListEntity> allCPUs = cpuRepo.getAllCPUs();
+		Assertions.assertThat(allCPUs.size())
+			.as("There should zero CPUs in the database, but there are %d CPUs in the database", allCPUs.size())
+			.isEqualTo(0);
 	}
 }

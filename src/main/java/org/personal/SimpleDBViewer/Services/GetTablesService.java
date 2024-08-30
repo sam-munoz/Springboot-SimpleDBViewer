@@ -48,7 +48,7 @@ public class GetTablesService {
      * @return Lists all UsersCPURanking entities stores the database.
      */
     public List<UsersCPURankingEntity> getRankingTable() {
-        return null;
+        return this.rankRepo.getAllRankings();
     }
 
     /**
@@ -57,6 +57,6 @@ public class GetTablesService {
      * @return Lists all CPURankingSummary entities stores the database.
      */
     public List<CPURankingSummaryEntity> getSummaryTable() {
-        return null;
+        return this.summaryRepo.getAllSummaries();
     }
 }

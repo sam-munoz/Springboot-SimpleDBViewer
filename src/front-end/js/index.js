@@ -79,11 +79,8 @@ function populateTableWithData(globalData, tableName) {
 document.getElementById("select-db-table").addEventListener("change", (e) => {
     // get data for fetching data
     requestData = generateRequestData(e);
+    console.log(requestData);
 
     // fetch and update page
     fetchData(requestData[0], requestData[1]);
 });
-
-// when the page loads, get data from the database
-// fetchData("http://localhost:8080/tables/cpus", "CPUListEntity")
-// fetchData("http://localhost:8080/tables/users", "UsersEntity")

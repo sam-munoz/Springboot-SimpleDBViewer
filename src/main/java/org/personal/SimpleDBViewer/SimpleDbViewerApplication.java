@@ -57,108 +57,29 @@ public class SimpleDbViewerApplication {
 			e.printStackTrace();
 		}
 	}
-	
-//	protected static SessionFactory buildSessionFactory() {
-//		SessionFactory sf = new Configuration()
-//				.addAnnotatedClass(CPUListEntity.class)
-//				.addAnnotatedClass(UsersEntity.class)
-//				.addAnnotatedClass(UsersCPURankingEntity.class)
-//				.addAnnotatedClass(CPURankingSummaryEntity.class)
-//				.buildSessionFactory();
-//		return sf;
-//	}
-	
-//	public static void printTable(SessionFactory s, int tableNum) {
-//		if(tableNum == 0) {
-//			List<CPUListEntity> l = CPUListEntityCRUDRepository.getAllCPUs(s);
-//			System.out.println("START PRINTING CPULIST");
-//			for(Object obj : l) System.out.println(obj);
-//			System.out.println("END PRINTING");
-//		} else if(tableNum == 1) {
-//			List<UsersEntity> l = UsersEntityCRUDRepository.getAllUsersEntities(s);
-//			System.out.println("START PRINTING USERS");
-//			for(Object obj : l) System.out.println(obj);
-//			System.out.println("END PRINTING");
-//		} else if(tableNum == 2) {
-//			List<UsersCPURankingEntity> l = UsersCPURankingCRUDRepository.getAllUsersEntities(s);
-//			System.out.println("START PRINTING RANKINGS");
-//			for(Object obj : l) System.out.println(obj);
-//			System.out.println("END PRINTING");
-//		} else if(tableNum == 3) {
-//			List<CPURankingSummaryEntity> l = CPURankingSummaryCRUDRepository.getAllCPUSummaryEntities(s);
-//			System.out.println("START PRINTING SUMMARIES");
-//			for(Object obj : l) System.out.println(obj);
-//			System.out.println("END PRINTING");
-//		}
-//	}
-	
-//	public static UsersCPURankingEntity createRanking(SessionFactory s, UsersCPURankingEntity rank) {
-//		// get cpu ranking summary for the input rank if it exists
-//		// probably should be a one liner if I create selection getter methods
-//		List<CPURankingSummaryEntity> summaries = CPURankingSummaryCRUDRepository.getAllCPUSummaryEntities(s);
-//		int index = 0;
-//		if(summaries.isEmpty()) {
-//			index = summaries.size();
-//		} else {
-//			while(!rank.getId().getCpu().equals(summaries.get(index).getCpuId())) {
-//				index++;
-//			}
-//		}
-//		// if an element found in the list
-//		CPURankingSummaryEntity currSummary = null;
-//		if(index < summaries.size()) {
-//			currSummary = summaries.get(index);
-//		}
-//
-//		// add new ranking to the database
-//		UsersCPURankingCRUDRepository.createRankingEntity(s, rank);
-//
-//		// update the summary if it exists or create a new summary
-//		if(currSummary != null) {
-//			currSummary.setCount(currSummary.getCount() + 1);
-//			currSummary.setRankSum(currSummary.getRankSum() + rank.getRanking());
-//			CPURankingSummaryCRUDRepository.updateCPUSummaryEntity(s, currSummary);
-//		} else {
-//			CPURankingSummaryCRUDRepository.createCPUSummaryEntity(s, rank.getId().getCpu(), rank.getRanking());
-//		}
-//		return rank;
-//	}
-//
-//	public static UsersCPURankingEntity createRanking(SessionFactory s, CPUListEntity cpu, UsersEntity user, Integer ranking) {
-//		UsersCPURankingEntity rank = new UsersCPURankingEntity(new UsersCPURankingId(cpu, user), ranking);
-//		return createRanking(s, rank);
-//	}
-
-//	@Bean
-//	public CommandLineRunner run(DBRepository repo) {
-//		return (args) {
-//			
-//		};
-//	}
 
 	public static void main(String[] args) {
 		// Start up SpringBoot application
 		ConfigurableApplicationContext container = SpringApplication.run(SimpleDbViewerApplication.class, args);
 
-		// create a cpu summary
-		CPURankingSummaryCRUDRepository summaryRepo = container.getBean(CPURankingSummaryCRUDRepository.class);
-		summaryRepo.createSummary(
-			new CPURankingSummaryEntity(new CPUListEntity("i7-11700KF"), 12, 2L)
-		);
-
 		// initialize cpu table
-//		CPUListEntityCRUDRepository cpuRepo = container.getBean(CPUListEntityCRUDRepository.class);
-//		cpuRepo.createCPU("i7-11700KF");
-//		cpuRepo.createCPU("i3-8100");
+		CPUListEntityCRUDRepository cpuRepo = container.getBean(CPUListEntityCRUDRepository.class);
+		CPUListEntity c0 = cpuRepo.createCPU(new CPUListEntity("i7-11700KF"));
+		CPUListEntity c1 = cpuRepo.createCPU(new CPUListEntity("i3-8100"));
 
 		// initialize user table
-//		UsersEntityCRUDRepository userRepo = container.getBean(UsersEntityCRUDRepository.class);
-//		userRepo.createUser("Sam");
-//		userRepo.createUser("Ricardo", "best");
-//		userRepo.createUser("Israel");
+		UsersEntityCRUDRepository userRepo = container.getBean(UsersEntityCRUDRepository.class);
+		UsersEntity u0 = userRepo.createUser(new UsersEntity("Sam"));
+		UsersEntity u1 = userRepo.createUser(new UsersEntity("Ricardo", "best"));
+		UsersEntity u2 = userRepo.createUser(new UsersEntity("Israel"));
 
-//		for(String beanName : container.getBeanDefinitionNames()) {
-//			System.out.println(beanName);
-//		}
+		// initialize the summary table
+		CPURankingSummaryCRUDRepository summaryRepo = container.getBean(CPURankingSummaryCRUDRepository.class);
+		CPURankingSummaryEntity s0 = summaryRepo.createSummary(new CPURankingSummaryEntity(c0, 12, 2L));
+
+		// initialize the ranking table
+		UsersCPURankingCRUDRepository rankingRepo = container.getBean(UsersCPURankingCRUDRepository.class);
+		UsersCPURankingEntity r0 = rankingRepo.createRanking(new UsersCPURankingEntity(c0, u0, 9));
+
 	}
 }

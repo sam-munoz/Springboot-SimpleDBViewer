@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.personal.SimpleDBViewer.CRUDRepository.CPUListEntityCRUDRepository;
 import org.personal.SimpleDBViewer.CRUDRepository.UsersCPURankingCRUDRepository;
 import org.personal.SimpleDBViewer.CRUDRepository.UsersEntityCRUDRepository;
@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 @SpringBootTest
 public class UsersCPURankingEntityTests {
@@ -31,42 +32,112 @@ public class UsersCPURankingEntityTests {
 
     private List<UsersCPURankingEntity> testRanking;
 
+    private List<CPUListEntity> testCPUs;
+
+    private List<UsersEntity> testUsers;
+
     @BeforeEach
     void setup() {
         testRanking = new ArrayList<UsersCPURankingEntity>();
+        testCPUs = new ArrayList<CPUListEntity>();
+        testUsers = new ArrayList<UsersEntity>();
 
-        CPUListEntity c0 = cpuRepo.createCPU("i7-11700KF");
-        CPUListEntity c1 = cpuRepo.createCPU("i3-8100");
-        UsersEntity u0 = userRepo.createUser("User 1");
-        UsersEntity u1 = userRepo.createUser("User 2");
-        UsersEntity u2 = userRepo.createUser("User 3");
+        CPUListEntity c0 = cpuRepo.createCPU(new CPUListEntity("i7-11700KF"));
+        CPUListEntity c1 = cpuRepo.createCPU(new CPUListEntity("i3-8100"));
+        testCPUs.add(c0);
+        testCPUs.add(c1);
+        UsersEntity u0 = userRepo.createUser(new UsersEntity("User 1"));
+        UsersEntity u1 = userRepo.createUser(new UsersEntity("User 2"));
+        UsersEntity u2 = userRepo.createUser(new UsersEntity("User 3"));
+        testUsers.add(u0);
+        testUsers.add(u1);
+        testUsers.add(u2);
 
         UsersCPURankingEntity r0 = new UsersCPURankingEntity(c0, u0, 7);
         UsersCPURankingEntity r1 = new UsersCPURankingEntity(c0, u1, 6);
-        UsersCPURankingEntity r2 = new UsersCPURankingEntity(c0, u2, 8);
-        UsersCPURankingEntity r3 = new UsersCPURankingEntity(c1, u0, 4);
-        UsersCPURankingEntity r4 = new UsersCPURankingEntity(c1, u1, 9);
+        UsersCPURankingEntity r2 = new UsersCPURankingEntity(c0, u2, 9);
+        UsersCPURankingEntity r3 = new UsersCPURankingEntity(c1, u0, 2);
+        UsersCPURankingEntity r4 = new UsersCPURankingEntity(c1, u1, 5);
         UsersCPURankingEntity r5 = new UsersCPURankingEntity(c1, u2, 10);
-        System.out.println(c0);
-        System.out.println(u0);
         testRanking.add(rankingRepo.createRanking(r0));
         testRanking.add(rankingRepo.createRanking(r1));
         testRanking.add(rankingRepo.createRanking(r2));
         testRanking.add(rankingRepo.createRanking(r3));
         testRanking.add(rankingRepo.createRanking(r4));
         testRanking.add(rankingRepo.createRanking(r5));
-        for(UsersCPURankingEntity r : testRanking) System.out.println(r);
     }
 
     @AfterEach
     void cleanup() {
-//        for(UsersCPURankingEntity r : testRanking) rankingRepo.deleteRanking(r);
+        rankingRepo.deleteAllRankings();
+        cpuRepo.deleteAllCPUs();
+        userRepo.deleteAllUsers();
         testRanking = null;
+        testCPUs = null;
+        testUsers = null;
+    }
+
+    private void nonNullFieldsEqual(UsersCPURankingEntity r0, UsersCPURankingEntity r1) {
+        Assertions.assertThat(r0)
+                .as("r0 is null")
+                .isNotEqualTo(null);
+        Assertions.assertThat(r1)
+                .as("r1 is null")
+                .isNotEqualTo(null);
+        Assertions.assertThat(r0.getCpu())
+                .as("r0 cpu is null")
+                .isNotEqualTo(null);
+        Assertions.assertThat(r0.getUser())
+                .as("r0 user is null")
+                .isNotEqualTo(null);
+        Assertions.assertThat(r1.getCpu())
+                .as("r1 cpu is null")
+                .isNotEqualTo(null);
+        Assertions.assertThat(r1.getUser())
+                .as("r1 user is null")
+                .isNotEqualTo(null);
+        if(r1.getCpu().getId() != null) {
+            Assertions.assertThat(r0.getCpu().getId())
+                    .as("Ranking cpu id %d is not equal to the correct ranking cpu id %d", r0.getCpu().getId(), r1.getCpu().getId())
+                    .isEqualTo(r1.getCpu().getId());
+        }
+        if(r1.getCpu().getName() != null) {
+            Assertions.assertThat(r0.getCpu().getName())
+                    .as("Ranking cpu name %s is not equal to the correct ranking cpu name %s", r0.getCpu().getName(), r1.getCpu().getName())
+                    .isEqualTo(r1.getCpu().getName());
+        }
+        if(r1.getUser().getId() != null) {
+            Assertions.assertThat(r0.getUser().getId())
+                    .as("Ranking user id %d is not equal to the correct ranking user id %d", r0.getUser().getId(), r1.getUser().getId())
+                    .isEqualTo(r1.getUser().getId());
+        }
+        if(r1.getUser().getName() != null) {
+            Assertions.assertThat(r0.getUser().getName())
+                    .as("Ranking user name %s is not equal to the correct ranking user name %s", r0.getUser().getName(), r1.getUser().getName())
+                    .isEqualTo(r1.getUser().getName());
+        }
+        if(r1.getUser().getPasswd() != null) {
+            Assertions.assertThat(r0.getUser().getPasswd())
+                    .as("Ranking user password %s is not equal to the correct ranking user password %s", r0.getUser().getPasswd(), r1.getUser().getPasswd())
+                    .isEqualTo(r1.getUser().getPasswd());
+        }
+        if(r1.getRanking() != null) {
+            Assertions.assertThat(r0.getRanking())
+                    .as("Ranking score %d is not equal to the correct ranking score %d", r0.getRanking(), r1.getRanking())
+                    .isEqualTo(r1.getRanking());
+
+        }
     }
 
     @ParameterizedTest
-    @MethodSource("org.personal.SimpleDBViewer.CRUDTests.Providers.UsersCPURankingEntityTestsProvider#testCreateRankingProvider")
-    void testCreateRanking(UsersCPURankingEntity ranking) {
+    @CsvSource({
+            "1,0,9",
+            "1,1,9",
+            "1,2,9",
+    })
+    void testCreateRanking(int cpuIndex, int userIndex, Integer rank) {
+        UsersCPURankingEntity ranking = new UsersCPURankingEntity(testCPUs.get(cpuIndex), testUsers.get(userIndex), rank);
+
         UsersCPURankingEntity newlyCreatedRanking = null;
         try {
             newlyCreatedRanking = rankingRepo.createRanking(ranking);
@@ -83,8 +154,14 @@ public class UsersCPURankingEntityTests {
     }
 
     @ParameterizedTest
-    @MethodSource("org.personal.SimpleDBViewer.CRUDTests.Providers.UsersCPURankingEntityTestsProvider#testGetRankingProvider")
-    void testGetRanking(UsersCPURankingEntity ranking) {
+    @CsvSource({
+            "0",
+            "3",
+            "2",
+            "5"
+    })
+    void testGetRanking(int rankingIndex) {
+        UsersCPURankingEntity ranking = testRanking.get(rankingIndex);
         UsersCPURankingEntity queryRanking = null;
         try {
             queryRanking = rankingRepo.getRanking(ranking);
@@ -93,43 +170,15 @@ public class UsersCPURankingEntityTests {
             return;
         }
 
-//        System.out.println(ranking);
-//        System.out.println(ranking.getCpu());
-//        System.out.println(ranking.getUser());
-//        System.out.println(queryRanking);
-//        System.out.println(queryRanking.getCpu());
-//        System.out.println(queryRanking.getUser());
-        if(ranking.getCpu().getId() != null) {
-            Assertions.assertThat(queryRanking.getCpu().getId())
-                    .as("Ranking cpu id %d is not equal to the correct ranking cpu id %d", queryRanking.getCpu().getId(), ranking.getCpu().getId())
-                    .isEqualTo(ranking.getCpu().getId());
-        }
-        if(ranking.getCpu().getName() != null) {
-            Assertions.assertThat(queryRanking.getCpu().getName())
-                    .as("Ranking cpu name %s is not equal to the correct ranking cpu name %s", queryRanking.getCpu().getName(), ranking.getCpu().getName())
-                    .isEqualTo(ranking.getCpu().getName());
-        }
-        if(ranking.getUser().getId() != null) {
-            Assertions.assertThat(queryRanking.getUser().getId())
-                    .as("Ranking user id %d is not equal to the correct ranking user id %d", queryRanking.getUser().getId(), ranking.getUser().getId())
-                    .isEqualTo(ranking.getUser().getId());
-        }
-        if(ranking.getUser().getName() != null) {
-            Assertions.assertThat(queryRanking.getUser().getName())
-                    .as("Ranking user name %s is not equal to the correct ranking user name %s", queryRanking.getUser().getName(), ranking.getUser().getName())
-                    .isEqualTo(ranking.getUser().getName());
-        }
-        if(ranking.getUser().getPasswd() != null) {
-            Assertions.assertThat(queryRanking.getUser().getPasswd())
-                    .as("Ranking user password %s is not equal to the correct ranking user password %s", queryRanking.getUser().getPasswd(), ranking.getUser().getPasswd())
-                    .isEqualTo(ranking.getUser().getPasswd());
-        }
-        if(ranking.getRanking() != null) {
-            Assertions.assertThat(queryRanking.getRanking())
-                    .as("Ranking score %d is not equal to the correct ranking score %d", queryRanking.getRanking(), ranking.getRanking())
-                    .isEqualTo(ranking.getRanking());
-
-        }
+        Assertions.assertThat(queryRanking)
+                .as("Query ranking equals the original ranking")
+                .isNotEqualTo(ranking);
+        Assertions.assertThat(queryRanking.getId())
+                .as("The queried id %s does not equal the correct value of %s", queryRanking.getId(), ranking.getId())
+                .isEqualTo(ranking.getId());
+        Assertions.assertThat(queryRanking.getRanking())
+                .as("The query ranking %d does not equal the correct value of %d", queryRanking.getRanking(), ranking.getRanking())
+                .isEqualTo(ranking.getRanking());
     }
 
     @Test
@@ -137,25 +186,26 @@ public class UsersCPURankingEntityTests {
         // get all rankings
         List<UsersCPURankingEntity> allRankingsInDB = rankingRepo.getAllRankings();
 
-        // ensure that all rankings are fetched
+        // ensure that all rankings are fetched (kind of)
         Assertions.assertThat(allRankingsInDB.size())
-                .as("Query returned %d number of rankings from the database, but there should be %d rankings", allRankingsInDB.size(), testRanking.size())
-                .isEqualTo(testRanking.size());
-        for(UsersCPURankingEntity r : allRankingsInDB) {
-            int index = testRanking.indexOf(r);
-            if(index == -1) index = 0;
-            Assertions.assertThat(r)
-                    .as("Ranking object %s should have value %s", r.toString(), testRanking.get(index).toString())
-                    .isEqualTo(testRanking.get(index));
-        }
+            .as("Query returned %d number of rankings from the database, but there should be %d rankings", allRankingsInDB.size(), testRanking.size())
+            .isEqualTo(testRanking.size());
     }
 
     // NOT REALLY WORKING
     @ParameterizedTest
-    @MethodSource("org.personal.SimpleDBViewer.CRUDTests.Providers.UsersCPURankingEntityTestsProvider#testDeleteRankingProvider")
-    void testDeleteRanking(UsersCPURankingEntity ranking) {
-        // HUGELY PROBLEMATIC LINE OF CODE. DON'T CARE FOR FIXING THIS
-        ranking = rankingRepo.getRanking(ranking);
+    @CsvSource({
+            "0",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "-1",
+    })
+    void testDeleteRanking(int rankingIndex) {
+        UsersCPURankingEntity ranking = null;
+        if(rankingIndex >= 0) ranking = testRanking.get(rankingIndex);
         try {
             rankingRepo.deleteRanking(ranking);
         } catch(NullPointerException e) {

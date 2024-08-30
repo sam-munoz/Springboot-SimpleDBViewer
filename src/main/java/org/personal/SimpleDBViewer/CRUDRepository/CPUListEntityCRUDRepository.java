@@ -146,4 +146,9 @@ public class CPUListEntityCRUDRepository {
 
 		this.repo.deleteEntity(cpu.getId(), CPUListEntity.class);
 	}
+
+	public void deleteAllCPUs() {
+		List<CPUListEntity> allCPUs = getAllCPUs();
+		for(CPUListEntity c : allCPUs) deleteCPU(c);
+	}
 }

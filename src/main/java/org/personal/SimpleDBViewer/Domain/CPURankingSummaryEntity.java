@@ -11,8 +11,9 @@ public class CPURankingSummaryEntity {
 	@Column(name="cpurankingsummaryId")
 	private Long id;
 
-	@OneToOne(optional=false, fetch=FetchType.EAGER, cascade=CascadeType.ALL)
+	@OneToOne(optional=false, fetch=FetchType.EAGER)
 	@MapsId
+	@Transient
 	private CPUListEntity cpu;
 	
 	@Column(name="cpurankingsummaryRanksum")
@@ -29,6 +30,9 @@ public class CPURankingSummaryEntity {
 
 	public CPURankingSummaryEntity(CPUListEntity cpu, Integer rankSum, Long count) {
 		this.cpu = cpu;
+		if(cpu != null && cpu.getId() != null) {
+			this.id = cpu.getId();
+		}
 		this.rankSum = rankSum;
 		this.count = count;
 	}
@@ -54,6 +58,9 @@ public class CPURankingSummaryEntity {
 
 	public void setCPU(CPUListEntity cpu) {
 		this.cpu = cpu;
+		if(cpu != null && cpu.getId() != null) {
+			this.id = cpu.getId();
+		}
 	}
 
 	public Long getCount() {

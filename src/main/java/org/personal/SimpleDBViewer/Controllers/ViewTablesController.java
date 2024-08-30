@@ -6,6 +6,9 @@ import org.personal.SimpleDBViewer.Domain.CPURankingSummaryEntity;
 import org.personal.SimpleDBViewer.Domain.UsersCPURankingEntity;
 import org.personal.SimpleDBViewer.Domain.UsersEntity;
 import org.personal.SimpleDBViewer.Services.GetTablesService;
+import org.personal.SimpleDBViewer.Services.PresentableData;
+import org.personal.SimpleDBViewer.Services.PresentableEntity.PresentableRanking;
+import org.personal.SimpleDBViewer.Services.PresentableEntity.PresentableSummary;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -20,6 +23,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class ViewTablesController {
     @Autowired
     private GetTablesService tablesService;
+
+    @Autowired
+    private PresentableData presentableDataService;
 
     @GetMapping("/")
     public String home() {
@@ -53,8 +59,10 @@ public class ViewTablesController {
      * @return Returns JSON data of all the entries of the UsersCPURanking table.
      */
     @GetMapping("/tables/rankings")
-    public List<UsersCPURankingEntity> viewRankingTable() {
-        return null;
+    @CrossOrigin(origins="http://localhost:5500")
+    public List<PresentableRanking> viewRankingTable() {
+        List<UsersCPURankingEntity> rawData = this.tablesService.getRankingTable();
+        return presentableDataService.makeRankingPresentable(rawData);
     }
 
     /**
@@ -63,7 +71,9 @@ public class ViewTablesController {
      * @return Returns JSON data of all the entries of the CPUListEntity table.
      */
     @GetMapping("/tables/summaries")
-    public List<CPURankingSummaryEntity> viewSummaryTable() {
-        return null;
+    @CrossOrigin(origins="http://localhost:5500")
+    public List<PresentableSummary> viewSummaryTable() {
+        List<CPURankingSummaryEntity> rawData = this.tablesService.getSummaryTable();
+        return presentableDataService.makeSummaryPresentable(rawData);
     }
 }
